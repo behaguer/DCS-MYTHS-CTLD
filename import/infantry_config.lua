@@ -1,7 +1,6 @@
 -----------------[[ infantry_config.lua ]]-----------------
 
 -- ************** WEIGHT CALCULATIONS FOR INFANTRY GROUPS ******************
-
 -- Infantry groups weight is calculated based on the soldiers' roles, and the weight of their kit
 -- Every soldier weights between 90% and 120% of ctld.SOLDIER_WEIGHT, and they all carry a backpack and their helmet (ctld.KIT_WEIGHT)
 -- Standard grunts have a rifle and ammo (ctld.RIFLE_WEIGHT)
@@ -31,6 +30,7 @@ ctld.JTAC_WEIGHT = 15    -- kg
 -- You must add a name to the group for it to work
 -- You can also add an optional coalition side to limit the group to one side
 -- for the side - 2 is BLUE and 1 is RED
+
 ctld.loadableGroups = {
     { name = ctld.i18n_translate("Standard Group"),                   inf = 6,    mg = 2,  at = 2 }, -- will make a loadable group with 6 infantry, 2 MGs and 2 anti-tank for both coalitions
     { name = ctld.i18n_translate("Anti Air"),                         inf = 2,    aa = 3 },
@@ -49,4 +49,5 @@ ctld.loadableGroups = {
     { name = ctld.i18n_translate("5x - Mortar Squad"),                mortar = 30 },
     -- {name = ctld.i18n_translate("Mortar Squad Red"), inf = 2, mortar = 5, side =1 }, --would make a group loadable by RED only
 }
+
 -----------------[[ END OF infantry_config.lua ]]-----------------

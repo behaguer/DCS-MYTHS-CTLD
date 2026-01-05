@@ -1,7 +1,5 @@
 -----------------[[ zones_config.lua ]]-----------------
 
--- ***************** Pickup, dropoff and waypoint zones *****************
-
 -- Available colors (anything else like "none" disables smoke): "green", "red", "white", "orange", "blue", "none",
 -- Use any of the predefined names or set your own ones
 -- You can add number as a third option to limit the number of soldier or vehicle groups that can be loaded from a zone.
@@ -11,7 +9,8 @@
 -- You can pickup from a SHIP by adding the SHIP UNIT NAME instead of a zone name
 -- Side - Controls which side can load/unload troops at the zone
 -- Flag Number - Optional last field. If set the current number of groups remaining can be obtained from the flag value
---pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
+
+-- pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
 ctld.pickupZones = {
     { "pickzone1",   "blue", -1, "yes", 0 },
     -- { "pickzone2",   "red",  -1, "yes", 0 },
@@ -23,7 +22,6 @@ ctld.pickupZones = {
     -- { "pickzone8",   "none", -1, "yes", 0 },
     -- { "pickzone9",   "none", 5,  "yes", 1 },    -- limits pickup zone 9 to 5 groups of soldiers or vehicles, only red can pick up
     -- { "pickzone10",  "none", 10, "yes", 2 },    -- limits pickup zone 10 to 10 groups of soldiers or vehicles, only blue can pick up
-
     -- { "pickzone11",  "blue", 20, "no",  2 },    -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
     -- { "pickzone12",  "red",  20, "no",  1 },    -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
     -- { "pickzone13",  "none", -1, "yes", 0 },
@@ -34,7 +32,6 @@ ctld.pickupZones = {
     -- { "pickzone18",  "none", -1, "yes", 0 },
     -- { "pickzone19",  "none", 5,  "yes", 0 },
     -- { "pickzone20",  "none", 10, "yes", 0, 1000 },     -- optional extra flag number to store the current number of groups available in
-
     -- { "USA Carrier", "blue", 10, "yes", 0, 1001 },     -- instead of a Zone Name you can also use the UNIT NAME of a ship
 }
 
@@ -65,4 +62,5 @@ ctld.wpZones = {
     { "wpzone9",  "none",   "yes", 1 },
     { "wpzone10", "none",   "no",  0 }, -- Both sides as its set to 0
 }
+
 -----------------[[ END OF zones_config.lua ]]-----------------

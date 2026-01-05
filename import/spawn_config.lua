@@ -1,25 +1,23 @@
 -----------------[[ spawn_config.lua ]]-----------------
 
 -- ************** SPAWNABLE CRATES ******************
--- Weights must be unique as we use the weight to change the cargo to the correct unit
--- when we unpack
---
+-- Crates you can spawn via F10 MENU
+-- weight is in KG
+-- Desc is the description on the F10 MENU
+-- unit is the model name of the unit to spawn
+-- cratesRequired - if set requires that many crates of the same type within 100m of each other in order build the unit
+-- side is optional but 2 is BLUE and 1 is RED
+
+-- Some descriptions are filtered to determine if JTAC or not!
+-- PLEASE NOTE: Weights must be unique as we use the weight to change the cargo to the correct unit when we unpack
+
 ctld.spawnableCrates = {
     -- name of the sub menu on F10 for spawning crates
     ["Combat Vehicles"] = {
-        --crates you can spawn
-        -- weight in KG
-        -- Desc is the description on the F10 MENU
-        -- unit is the model name of the unit to spawn
-        -- cratesRequired - if set requires that many crates of the same type within 100m of each other in order build the unit
-        -- side is optional but 2 is BLUE and 1 is RED
-
-        -- Some descriptions are filtered to determine if JTAC or not!
-
         --- BLUE
         { weight = 1000.01,                                desc = ctld.i18n_translate("Humvee - MG"),                      unit = "M1043 HMMWV Armament", side = 2 }, --careful with the names as the script matches the desc to JTAC types
         { weight = 1000.02,                                desc = ctld.i18n_translate("Humvee - TOW"),                     unit = "M1045 HMMWV TOW",      side = 2, cratesRequired = 2 },
-        { multiple = { 1000.02,1000.02 },                   desc = ctld.i18n_translate("Humvee - TOW - All crates"),        side = 2 },
+        { multiple = { 1000.02,1000.02 },                  desc = ctld.i18n_translate("Humvee - TOW - All crates"),        side = 2 },
         { weight = 1000.03,                                desc = ctld.i18n_translate("Light Tank - MRAP"),                unit = "MaxxPro_MRAP",         side = 2, cratesRequired = 2 },
         { multiple = { 1000.03, 1000.03 },                 desc = ctld.i18n_translate("Light Tank - MRAP - All crates"),   side = 2 },
         { weight = 1000.04,                                desc = ctld.i18n_translate("Med Tank - LAV-25"),                unit = "LAV-25",               side = 2, cratesRequired = 3 },
@@ -30,7 +28,7 @@ ctld.spawnableCrates = {
         --- RED
         { weight = 1000.11,                                desc = ctld.i18n_translate("BTR-D"),                            unit = "BTR_D",                side = 1 },
         { weight = 1000.12,                                desc = ctld.i18n_translate("BRDM-2"),                           unit = "BRDM-2",               side = 1 },
-        -- need more redfor!
+
     },
     ["Support"] = {
         --- BLUE
@@ -50,10 +48,8 @@ ctld.spawnableCrates = {
         --- Both
         { weight = 1001.21,                       desc = ctld.i18n_translate("EWR Radar"),                        unit = "FPS-117",           cratesRequired = 3 },
         { multiple = { 1001.21, 1001.21, 1001.21 }, desc = ctld.i18n_translate("EWR Radar - All crates") },
-        
         { weight = 1001.22,                         desc = ctld.i18n_translate("FOB Crate - Small"),                unit = "FOB-SMALL" }, -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
         { multiple = { 1001.22, 1001.22, 1001.22 }, desc = ctld.i18n_translate("FOB Crate - Small - All crates"),                unit = "FOB-SMALL" }, -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
-
 
     },
     ["Artillery"] = {
@@ -99,7 +95,6 @@ ctld.spawnableCrates = {
     },
     ["SAM mid range"] = {
         --- BLUE
-        -- HAWK System
         { weight = 1004.01,                       desc = ctld.i18n_translate("HAWK Launcher"),             unit = "Hawk ln",              side = 2 },
         { weight = 1004.02,                       desc = ctld.i18n_translate("HAWK Search Radar"),         unit = "Hawk sr",              side = 2 },
         { weight = 1004.03,                       desc = ctld.i18n_translate("HAWK Track Radar"),          unit = "Hawk tr",              side = 2 },
@@ -107,25 +102,17 @@ ctld.spawnableCrates = {
         { weight = 1004.05,                       desc = ctld.i18n_translate("HAWK CWAR"),                 unit = "Hawk cwar",            side = 2 },
         { weight = 1004.06,                       desc = ctld.i18n_translate("HAWK Repair"),               unit = "HAWK Repair",          side = 2 },
         { multiple = { 1004.01, 1004.02, 1004.03 }, desc = ctld.i18n_translate("HAWK - All crates"),       side = 2 },
-        -- End of HAWK
-
-        -- NASAMS Sysyem
         { weight = 1004.11,                       desc = ctld.i18n_translate("NASAMS Launcher 120C"),      unit = "NASAMS_LN_C",          side = 2 },
         { weight = 1004.12,                       desc = ctld.i18n_translate("NASAMS Search/Track Radar"), unit = "NASAMS_Radar_MPQ64F1", side = 2 },
         { weight = 1004.13,                       desc = ctld.i18n_translate("NASAMS Command Post"),       unit = "NASAMS_Command_Post",  side = 2 },
         { weight = 1004.14,                       desc = ctld.i18n_translate("NASAMS Repair"),             unit = "NASAMS Repair",        side = 2 },
         { multiple = { 1004.11, 1004.12, 1004.13 }, desc = ctld.i18n_translate("NASAMS - All crates"),     side = 2 },
-        -- End of NASAMS
 
         --- RED
-        -- KUB SYSTEM
         { weight = 1004.21,                       desc = ctld.i18n_translate("KUB Launcher"),              unit = "Kub 2P25 ln",          side = 1 },
         { weight = 1004.22,                       desc = ctld.i18n_translate("KUB Radar"),                 unit = "Kub 1S91 str",         side = 1 },
         { weight = 1004.23,                       desc = ctld.i18n_translate("KUB Repair"),                unit = "KUB Repair",           side = 1 },
         { multiple = { 1004.21, 1004.22 },        desc = ctld.i18n_translate("KUB - All crates"),          side = 1 },
-        -- End of KUB
-
-        -- BUK System
         { weight = 1004.31,                       desc = ctld.i18n_translate("BUK Launcher"),              unit = "SA-11 Buk LN 9A310M1", side = 1 },
         { weight = 1004.32,                       desc = ctld.i18n_translate("BUK Search Radar"),          unit = "SA-11 Buk SR 9S18M1",  side = 1 },
         { weight = 1004.33,                       desc = ctld.i18n_translate("BUK CC Radar"),              unit = "SA-11 Buk CC 9S470M1", side = 1 },
@@ -135,7 +122,6 @@ ctld.spawnableCrates = {
     },
     ["SAM long range"] = {
         --- BLUE
-        -- Patriot System
         { weight = 1005.01,                                         desc = ctld.i18n_translate("Patriot Launcher"),            unit = "Patriot ln",        side = 2 },
         { weight = 1005.02,                                         desc = ctld.i18n_translate("Patriot Radar"),               unit = "Patriot str",       side = 2 },
         { weight = 1005.03,                                         desc = ctld.i18n_translate("Patriot ECS"),                 unit = "Patriot ECS",       side = 2 },
@@ -144,9 +130,6 @@ ctld.spawnableCrates = {
         { weight = 1005.06,                                         desc = ctld.i18n_translate("Patriot AMG (optional)"),      unit = "Patriot AMG",       side = 2 },
         { weight = 1005.07,                                         desc = ctld.i18n_translate("Patriot Repair"),              unit = "Patriot Repair",    side = 2 },
         { multiple = { 1005.01, 1005.02, 1005.03 },                 desc = ctld.i18n_translate("Patriot - All crates"),        side = 2 },
-        -- End of Patriot
-
-        -- S-300 SYSTEM
         { weight = 1005.11,                                         desc = ctld.i18n_translate("S-300 Grumble TEL C"),         unit = "S-300PS 5P85C ln",  side = 1 },
         { weight = 1005.12,                                         desc = ctld.i18n_translate("S-300 Grumble Flap Lid-A TR"), unit = "S-300PS 40B6M tr",  side = 1 },
         { weight = 1005.13,                                         desc = ctld.i18n_translate("S-300 Grumble Clam Shell SR"), unit = "S-300PS 40B6MD sr", side = 1 },
@@ -154,16 +137,14 @@ ctld.spawnableCrates = {
         { weight = 1005.15,                                         desc = ctld.i18n_translate("S-300 Grumble C2"),            unit = "S-300PS 54K6 cp",   side = 1 },
         { weight = 1005.16,                                         desc = ctld.i18n_translate("S-300 Repair"),                unit = "S-300 Repair",      side = 1 },
         { multiple = { 1005.11, 1005.12, 1005.13, 1005.14, 1005.15 }, desc = ctld.i18n_translate("Patriot - All crates"),      side = 1 },
-        -- End of S-300
     },
     ["Drone"] = {
         --- BLUE MQ-9 Repear
         { weight = 1006.01, desc = ctld.i18n_translate("MQ-9 Repear - JTAC"),    unit = "MQ-9 Reaper",    side = 2 },
-        -- End of BLUE MQ-9 Repear
 
         --- RED MQ-1A Predator
         { weight = 1006.11, desc = ctld.i18n_translate("MQ-1A Predator - JTAC"), unit = "RQ-1A Predator", side = 1 },
-        -- End of RED MQ-1A Predator
+
     },
 }
 
@@ -230,4 +211,5 @@ ctld.spawnableCratesModels = {
         ["shape_name"] = "trunks_small_cargo",
         ["type"] = "trunks_small_cargo",
 ]] --
+ 
 -----------------[[ END OF spawn_config.lua ]]-----------------

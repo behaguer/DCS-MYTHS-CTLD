@@ -1,7 +1,8 @@
 -----------------[[ transport_config.lua ]]-----------------
 
--- ******************** Transports names **********************
+-- Transportable Craft Names
 -- If ctld.addPlayerAircraftByType = True, comment or uncomment lines to allow aircraft's type carry CTLD
+
 ctld.aircraftTypeTable = {
     --%%%%% MODS %%%%%
     --"Bronco-OV-10A",
@@ -191,7 +192,6 @@ ctld.extractableGroups = {
     "extract8",
     "extract9",
     "extract10",
-
     "extract11",
     "extract12",
     "extract13",
@@ -202,7 +202,6 @@ ctld.extractableGroups = {
     "extract18",
     "extract19",
     "extract20",
-
     "extract21",
     "extract22",
     "extract23",
@@ -213,7 +212,7 @@ ctld.extractableGroups = {
 -- ************** Logistics UNITS FOR CRATE SPAWNING ******************
 
 -- Use any of the predefined names or set your own ones
--- When a logistic unit is destroyed, you will no longer be able to spawn crates
+-- PLEASE NOTE: When a logistic unit is destroyed, you will no longer be able to spawn crates
 ctld.dynamicLogisticUnitsIndex = 0 -- This is the unit that will be spawned first and then subsequent units will be from the next in the list
 ctld.logisticUnits = {
     "logistic1",
