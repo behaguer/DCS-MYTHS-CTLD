@@ -59,9 +59,9 @@ ctld.dontInitialize = false -- if true, ctld.initialize() will not run; instead,
 ctld.i18n_lang = "en"
 --========    FRENCH - FRANCAIS =================================================================================
 --ctld.i18n_lang = "fr"
---======    SPANISH : ESPAÑOL ====================================================================================
+--======    SPANISH : ESPAÃƒâ€˜OL ====================================================================================
 --ctld.i18n_lang = "es"
---======    Korean : 한국어 ====================================================================================
+--======    Korean : Ã­â€¢Å“ÃªÂµÂ­Ã¬â€“Â´ ====================================================================================
 --ctld.i18n_lang = "ko"
 
 if not ctld.i18n then  -- should be defined first by CTLD-i18n.lua, but just in case it's an old mission, let's keep it here
@@ -491,27 +491,13 @@ ctld.AASystemCrateStacking = false
 -----------------[[ END OF config.lua ]]-----------------
 -----------------[[ jtac_config.lua ]]-----------------
 
--- ***************** JTAC CONFIGURATION *****************
-ctld.JTAC_LIMIT_RED = 10             -- max number of JTAC Crates for the RED Side
-ctld.JTAC_LIMIT_BLUE = 10            -- max number of JTAC Crates for the BLUE Side
-ctld.JTAC_dropEnabled = true         -- allow JTAC Crate spawn from F10 menu
-ctld.JTAC_maxDistance = 10000        -- How far a JTAC can "see" in meters (with Line of Sight)
-ctld.JTAC_smokeOn_RED = false        -- enables marking of target with smoke for RED forces
-ctld.JTAC_smokeOn_BLUE = false       -- enables marking of target with smoke for BLUE forces
-ctld.JTAC_smokeColour_RED = 4        -- RED side smoke colour -- Green = 0 , Red = 1, White = 2, Orange = 3, Blue = 4
-ctld.JTAC_smokeColour_BLUE = 1       -- BLUE side smoke colour -- Green = 0 , Red = 1, White = 2, Orange = 3, Blue = 4
-ctld.JTAC_smokeMarginOfError = 50    -- error that the JTAC is allowed to make when popping a smoke (in meters)
-ctld.JTAC_smokeOffset_x = 0.0        -- distance in the X direction from target to smoke (meters)
-ctld.JTAC_smokeOffset_y = 2.0        -- distance in the Y direction from target to smoke (meters)
-ctld.JTAC_smokeOffset_z = 0.0        -- distance in the z direction from target to smoke (meters)
-ctld.JTAC_jtacStatusF10 = true       -- enables F10 JTAC Status menu
-ctld.JTAC_location = true            -- shows location of target in JTAC message
-ctld.location_DMS = false            -- shows coordinates as Degrees Minutes Seconds instead of Degrees Decimal minutes
-ctld.JTAC_lock = "all"               -- "vehicle" OR "troop" OR "all" forces JTAC to only lock vehicles or troops or all ground units
-ctld.JTAC_allowStandbyMode = true    -- if true, allow players to toggle lasing on/off
-ctld.JTAC_laseSpotCorrections = true -- if true, each JTAC will have a special option (toggle on/off) available in it's menu to attempt to lead the target, taking into account current wind conditions and the speed of the target (particularily useful against moving heavy armor)
-ctld.JTAC_allowSmokeRequest = true   -- if true, allow players to request a smoke on target (temporary)
-ctld.JTAC_allow9Line = true          -- if true, allow players to ask for a 9Line (individual) for a specific JTAC's target
+-- if the unit is on this list, it will be made into a JTAC when deployed
+ctld.jtacUnitTypes     = {
+    "SKP", "Hummer",            -- there are some wierd encoding issues so if you write SKP-11 it wont match as the - sign is encoded differently...
+    "MQ", "RQ"                  --"MQ-9 Repear", "RQ-1A Predator"}
+}
+ctld.jtacDroneRadius   = 1000   -- JTAC offset radius in meters for orbiting drones
+ctld.jtacDroneAltitude = 7000   -- JTAC altitude in meters for orbiting drones
 
 -----------------[[ END OF jtac_config.lua ]]-----------------
 -----------------[[ zones_config.lua ]]-----------------
@@ -8487,8 +8473,8 @@ end
 --  Use : In mission editor:
 --                  0> Set ctld.enableAutoOrbitingFlyingJtacOnTarget = true
 --      			1> Load MIST + CTLD
---                  2> Create a TRIGGER (once) at Time sup à 6, and a ACTION.EXECUTE SCRIPT :
---							ctld.JTACAutoLase("gdrone1", 1688,false)  -- défine group "gdrone1" as a JTAC
+--                  2> Create a TRIGGER (once) at Time sup ÃƒÂ  6, and a ACTION.EXECUTE SCRIPT :
+--							ctld.JTACAutoLase("gdrone1", 1688,false)  -- dÃƒÂ©fine group "gdrone1" as a JTAC
 ------------------------------------------------------------------------------------
 ctld.JTACInRoute = {}	                          -- for each JTAC in route, indicates the time of the run
 ctld.OrbitInUse = {}	                          -- for each Orbit group in use, indicates the time of the run
@@ -8498,7 +8484,7 @@ ctld.enableAutoOrbitingFlyingJtacOnTarget = true  -- if true activate the AutoOr
 function ctld.TreatOrbitJTAC(params, t)
     if t == nil then t = timer.getTime() end
 
-	for k,v in pairs(ctld.jtacUnits) do					-- vérify state of each active JTAC
+	for k,v in pairs(ctld.jtacUnits) do					-- vÃƒÂ©rify state of each active JTAC
 		if  ctld.isFlyingJtac(k) then
             if ctld.JTACInRoute[k] == nil and  ctld.OrbitInUse[k] == nil then		-- if JTAC is in route
                 ctld.JTACInRoute[k] = timer.getTime()		-- update time of the last run
@@ -8902,7 +8888,6 @@ end
 
 
 -----------------[[ END OF recon.lua ]]-----------------
-
 -----------------[[ init.lua ]]-----------------
 function ctld.initialize()
     ctld.logInfo(string.format("Initializing version %s", ctld.Version))
