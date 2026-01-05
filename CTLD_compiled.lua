@@ -402,64 +402,60 @@ end
 -----------------[[ END OF i18n.lua ]]-----------------
 -----------------[[ config.lua ]]-----------------
 
-ctld.staticBugWorkaround = false --    DCS had a bug where destroying statics would cause a crash. If this happens again, set this to TRUE
-
-ctld.disableAllSmoke = false     -- if true, all smoke is diabled at pickup and drop off zones regardless of settings below. Leave false to respect settings below
-
--- Allow units to CTLD by aircraft type and not by pilot name - this is done everytime a player enters a new unit
-ctld.addPlayerAircraftByType = true
-
-ctld.hoverPickup = true       --    if set to false you can load crates with the F10 menu instead of hovering... Only if not using real crates!
-ctld.loadCrateFromMenu = true -- if set to true, you can load crates with the F10 menu OR hovering, in case of using choppers and planes for example.
-
-ctld.enableCrates = true      -- if false, Helis will not be able to spawn or unpack crates so will be normal CTTS
-ctld.enableAllCrates = true   -- if false, the "all crates" menu items will not be displayed
-ctld.slingLoad = false        -- if false, crates can be used WITHOUT slingloading, by hovering above the crate, simulating slingloading but not the weight...
--- There are some bug with Sling-loading that can cause crashes, if these occur set slingLoad to false
--- to use the other method.
--- Set staticBugFix    to FALSE if use set ctld.slingLoad to TRUE
-ctld.enableSmokeDrop = true                                                   -- if false, helis and c-130 will not be able to drop smoke
-ctld.maxExtractDistance = 125                                                 -- max distance from vehicle to troops to allow a group extraction
-ctld.maximumDistanceLogistic = 1000                                            -- max distance from vehicle to logistics to allow a loading or spawning operation
-ctld.maxDistanceBetweenCratesForBuilding = 1000                     -- max distance between crates to allow building a vehicle or AA system
-ctld.enableRepackingVehicles = true                                           -- if true, vehicles can be repacked into crates
-ctld.maximumDistanceRepackableUnitsSearch = 200                               -- max distance from transportUnit to search force repackable units in meters
-ctld.maximumSearchDistance = 4000                                             -- max distance for troops to search for enemy
-ctld.maximumMoveDistance = 2000                                               -- max distance for troops to move from drop point if no enemy is nearby
-ctld.minimumDeployDistance = 1000                                             -- minimum distance from a friendly pickup zone where you can deploy a crate
-ctld.numberOfTroops = 10                                                      -- default number of troops to load on a transport heli or C-130
--- also works as maximum size of group that'll fit into a helicopter unless overridden
-ctld.enableFastRopeInsertion = true                                           -- allows you to drop troops by fast rope
-ctld.fastRopeMaximumHeight = 18.28                                            -- in meters which is 60 ft max fast rope (not rappell) safe height
-ctld.vehiclesForTransportRED = { "BRDM-2", "BTR_D" }                          -- vehicles to load onto Il-76 - Alternatives {"Strela-1 9P31","BMP-1"}
-ctld.vehiclesForTransportBLUE = { "M1045 HMMWV TOW", "M1043 HMMWV Armament" } -- vehicles to load onto c130 - Alternatives {"M1128 Stryker MGS","M1097 Avenger"}
+ctld.staticBugWorkaround = false                        -- DCS had a bug where destroying statics would cause a crash. If this happens again, set this to TRUE
+ctld.disableAllSmoke = false                            -- if true, all smoke is diabled at pickup and drop off zones regardless of settings below. Leave false to respect settings below
+ctld.addPlayerAircraftByType = true                     -- Allow units to CTLD by aircraft type and not by pilot name - this is done everytime a player enters a new unit
+ctld.hoverPickup = true                                 -- if set to false you can load crates with the F10 menu instead of hovering... Only if not using real crates!
+ctld.loadCrateFromMenu = true                           -- if set to true, you can load crates with the F10 menu OR hovering, in case of using choppers and planes for example.
+ctld.enableCrates = true                                -- if false, Helis will not be able to spawn or unpack crates so will be normal CTTS
+ctld.enableAllCrates = true                             -- if false, the "all crates" menu items will not be displayed
+ctld.slingLoad = false                                  -- if false, crates can be used WITHOUT slingloading, by hovering above the crate, simulating slingloading but not the weight...
+                                                        -- There are some bug with Sling-loading that can cause crashes, if these occur set slingLoad to false
+                                                        -- to use the other method.
+                                                        -- Set staticBugFix    to FALSE if use set ctld.slingLoad to TRUE
+ctld.enableSmokeDrop = true                             -- if false, helis and c-130 will not be able to drop smoke
+ctld.maxExtractDistance = 125                           -- max distance from vehicle to troops to allow a group extraction
+ctld.maximumDistanceLogistic = 1000                     -- max distance from vehicle to logistics to allow a loading or spawning operation
+ctld.maxDistanceBetweenCratesForBuilding = 1000         -- max distance between crates to allow building a vehicle or AA system
+ctld.enableRepackingVehicles = true                     -- if true, vehicles can be repacked into crates
+ctld.maximumDistanceRepackableUnitsSearch = 200         -- max distance from transportUnit to search force repackable units in meters
+ctld.maximumSearchDistance = 4000                       -- max distance for troops to search for enemy
+ctld.maximumMoveDistance = 2000                         -- max distance for troops to move from drop point if no enemy is nearby
+ctld.minimumDeployDistance = 1000                       -- minimum distance from a friendly pickup zone where you can deploy a crate
+ctld.numberOfTroops = 10                                -- default number of troops to load on a transport heli or C-130
+                                                        -- also works as maximum size of group that'll fit into a helicopter unless overridden
+ctld.enableFastRopeInsertion = true                     -- allows you to drop troops by fast rope
+ctld.fastRopeMaximumHeight = 18.28                      -- in meters which is 60 ft max fast rope (not rappell) safe height
+ctld.vehiclesForTransportRED = { "BRDM-2", "BTR_D" }    -- vehicles to load onto Il-76 - Alternatives {"Strela-1 9P31","BMP-1"}
+ctld.vehiclesForTransportBLUE = { 
+    "M1045 HMMWV TOW", "M1043 HMMWV Armament" 
+}                                                       -- vehicles to load onto c130 - Alternatives {"M1128 Stryker MGS","M1097 Avenger"}
 ctld.vehiclesWeight = {
     ["BRDM-2"] = 7000,
     ["BTR_D"] = 8000,
     ["M1045 HMMWV TOW"] = 3220,
     ["M1043 HMMWV Armament"] = 2500
 }
-
-ctld.spawnRPGWithCoalition = true --spawns a friendly RPG unit with Coalition forces
-ctld.spawnStinger = false         -- spawns a stinger / igla soldier with a group of 6 or more soldiers!
-ctld.enabledFOBBuilding = true    -- if true, you can load a crate INTO a C-130 than when unpacked creates a Forward Operating Base (FOB) which is a new place to spawn (crates) and carry crates from
--- In future i'd like it to be a FARP but so far that seems impossible...
--- You can also enable troop Pickup at FOBS
-ctld.cratesRequiredForFOB = 1 -- The amount of crates required to build a FOB. Once built, helis can spawn crates at this outpost to be carried and deployed in another area.
--- The large crates can only be loaded and dropped by large aircraft, like the C-130 and listed in ctld.vehicleTransportEnabled
--- Small FOB crates can be moved by helicopter. The FOB will require ctld.cratesRequiredForFOB larges crates and small crates are 1/3 of a large fob crate
--- To build the FOB entirely out of small crates you will need ctld.cratesRequiredForFOB * 3
-
-ctld.troopPickupAtFOB = true            -- if true, troops can also be picked up at a created FOB
-ctld.buildTimeFOB = 120                 --time in seconds for the FOB to be built
-ctld.crateWaitTime = 40                 -- time in seconds to wait before you can spawn another crate
-ctld.forceCrateToBeMoved = true         -- a crate must be picked up at least once and moved before it can be unpacked. Helps to reduce crate spam
-ctld.radioSound = "beacon.ogg"          -- the name of the sound file to use for the FOB radio beacons. If this isnt added to the mission BEACONS WONT WORK!
-ctld.radioSoundFC3 ="beaconsilent.ogg"  -- name of the second silent radio file, used so FC3 aircraft dont hear ALL the beacon noises... :)
-ctld.deployedBeaconBattery = 30         -- the battery on deployed beacons will last for this number minutes before needing to be re-deployed
-ctld.enabledRadioBeaconDrop = true      -- if its set to false then beacons cannot be dropped by units
-ctld.allowRandomAiTeamPickups = false   -- Allows the AI to randomize the loading of infantry teams (specified below) at pickup zones
--- Limit the dropping of infantry teams -- this limit control is inactive if ctld.nbLimitSpawnedTroops = {0, 0} ----
+ctld.spawnRPGWithCoalition = true                       -- spawns a friendly RPG unit with Coalition forces
+ctld.spawnStinger = false                               -- spawns a stinger / igla soldier with a group of 6 or more soldiers!
+ctld.enabledFOBBuilding = true                          -- if true, you can load a crate INTO a C-130 than when unpacked creates a Forward Operating Base (FOB) which is a new place to spawn (crates) and carry crates from
+                                                        -- In future i'd like it to be a FARP but so far that seems impossible...
+                                                        -- You can also enable troop Pickup at FOBS
+ctld.cratesRequiredForFOB = 1                           -- The amount of crates required to build a FOB. Once built, helis can spawn crates at this outpost to be carried and deployed in another area.
+                                                        -- The large crates can only be loaded and dropped by large aircraft, like the C-130 and listed in ctld.vehicleTransportEnabled
+                                                        -- Small FOB crates can be moved by helicopter. The FOB will require ctld.cratesRequiredForFOB larges crates and small crates are 1/3 of a large fob crate
+                                                        -- To build the FOB entirely out of small crates you will need ctld.cratesRequiredForFOB * 3
+ctld.troopPickupAtFOB = true                            -- if true, troops can also be picked up at a created FOB
+ctld.buildTimeFOB = 120                                 -- time in seconds for the FOB to be built
+ctld.crateWaitTime = 40                                 -- time in seconds to wait before you can spawn another crate
+ctld.forceCrateToBeMoved = true                         -- a crate must be picked up at least once and moved before it can be unpacked. Helps to reduce crate spam
+ctld.radioSound = "beacon.ogg"                          -- the name of the sound file to use for the FOB radio beacons. If this isnt added to the mission BEACONS WONT WORK!
+ctld.radioSoundFC3 ="beaconsilent.ogg"                  -- name of the second silent radio file, used so FC3 aircraft dont hear ALL the beacon noises... :)
+ctld.deployedBeaconBattery = 30                         -- the battery on deployed beacons will last for this number minutes before needing to be re-deployed
+ctld.enabledRadioBeaconDrop = true                      -- if its set to false then beacons cannot be dropped by units
+ctld.allowRandomAiTeamPickups = false                   -- Allows the AI to randomize the loading of infantry teams (specified below) at pickup zones
+                
+-- Limit the dropping of infantry teams please note: this limit control is inactive if ctld.nbLimitSpawnedTroops = {0, 0}
 ctld.nbLimitSpawnedTroops = {0, 0}      -- {redLimitInfantryCount, blueLimitInfantryCount} when this cumulative number of troops is reached, no more troops can be loaded onboard
 ctld.InfantryInGameCount  = {0, 0}      -- {redCoaInfantryCount, blueCoaInfantryCount}
 
@@ -469,24 +465,22 @@ ctld.maximumHoverHeight = 12.0  -- Highest allowable height for crate hover
 ctld.maxDistanceFromCrate = 5.5 -- Maximum distance from from crate for hover
 ctld.hoverTime = 10             -- Time to hold hover above a crate for loading in seconds
 
--- end of Simulated Sling load configuration
 
--- ***************** AA SYSTEM CONFIG *****************
-ctld.aaLaunchers = 3 -- controls how many launchers to add to the AA systems when its spawned if no amount is specified in the template.
--- Sets a limit on the number of active AA systems that can be built for RED.
--- A system is counted as Active if its fully functional and has all parts
--- If a system is partially destroyed, it no longer counts towards the total
--- When this limit is hit, a player will still be able to get crates for an AA system, just unable
--- to unpack them
+-- AA System Config 
+ctld.aaLaunchers = 3    -- controls how many launchers to add to the AA systems when its spawned if no amount is specified in the template.
+                        -- Sets a limit on the number of active AA systems that can be built for RED.
+                        -- A system is counted as Active if its fully functional and has all parts
+                        -- If a system is partially destroyed, it no longer counts towards the total
+                        -- When this limit is hit, a player will still be able to get crates for an AA system, just unable
+                        -- to unpack them
 
 ctld.AASystemLimitRED = 20  -- Red side limit
 ctld.AASystemLimitBLUE = 20 -- Blue side limit
 
 -- Allows players to create systems using as many crates as they like
 -- Example : an amount X of patriot launcher crates allows for Y launchers to be deployed, if a player brings 2*X+Z crates (Z being lower then X), then deploys the patriot site, 2*Y launchers will be in the group and Z launcher crate will be left over
-
 ctld.AASystemCrateStacking = false
---END AA SYSTEM CONFIG ------------------------------------
+
 
 -----------------[[ END OF config.lua ]]-----------------
 -----------------[[ jtac_config.lua ]]-----------------
@@ -523,8 +517,6 @@ ctld.jtacDroneAltitude = 7000   -- JTAC altitude in meters for orbiting drones
 -----------------[[ END OF jtac_config.lua ]]-----------------
 -----------------[[ zones_config.lua ]]-----------------
 
--- ***************** Pickup, dropoff and waypoint zones *****************
-
 -- Available colors (anything else like "none" disables smoke): "green", "red", "white", "orange", "blue", "none",
 -- Use any of the predefined names or set your own ones
 -- You can add number as a third option to limit the number of soldier or vehicle groups that can be loaded from a zone.
@@ -534,7 +526,8 @@ ctld.jtacDroneAltitude = 7000   -- JTAC altitude in meters for orbiting drones
 -- You can pickup from a SHIP by adding the SHIP UNIT NAME instead of a zone name
 -- Side - Controls which side can load/unload troops at the zone
 -- Flag Number - Optional last field. If set the current number of groups remaining can be obtained from the flag value
---pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
+
+-- pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
 ctld.pickupZones = {
     { "pickzone1",   "blue", -1, "yes", 0 },
     -- { "pickzone2",   "red",  -1, "yes", 0 },
@@ -546,7 +539,6 @@ ctld.pickupZones = {
     -- { "pickzone8",   "none", -1, "yes", 0 },
     -- { "pickzone9",   "none", 5,  "yes", 1 },    -- limits pickup zone 9 to 5 groups of soldiers or vehicles, only red can pick up
     -- { "pickzone10",  "none", 10, "yes", 2 },    -- limits pickup zone 10 to 10 groups of soldiers or vehicles, only blue can pick up
-
     -- { "pickzone11",  "blue", 20, "no",  2 },    -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
     -- { "pickzone12",  "red",  20, "no",  1 },    -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
     -- { "pickzone13",  "none", -1, "yes", 0 },
@@ -557,7 +549,6 @@ ctld.pickupZones = {
     -- { "pickzone18",  "none", -1, "yes", 0 },
     -- { "pickzone19",  "none", 5,  "yes", 0 },
     -- { "pickzone20",  "none", 10, "yes", 0, 1000 },     -- optional extra flag number to store the current number of groups available in
-
     -- { "USA Carrier", "blue", 10, "yes", 0, 1001 },     -- instead of a Zone Name you can also use the UNIT NAME of a ship
 }
 
@@ -588,11 +579,13 @@ ctld.wpZones = {
     { "wpzone9",  "none",   "yes", 1 },
     { "wpzone10", "none",   "no",  0 }, -- Both sides as its set to 0
 }
+
 -----------------[[ END OF zones_config.lua ]]-----------------
 -----------------[[ transport_config.lua ]]-----------------
 
--- ******************** Transports names **********************
+-- Transportable Craft Names
 -- If ctld.addPlayerAircraftByType = True, comment or uncomment lines to allow aircraft's type carry CTLD
+
 ctld.aircraftTypeTable = {
     --%%%%% MODS %%%%%
     --"Bronco-OV-10A",
@@ -782,7 +775,6 @@ ctld.extractableGroups = {
     "extract8",
     "extract9",
     "extract10",
-
     "extract11",
     "extract12",
     "extract13",
@@ -793,7 +785,6 @@ ctld.extractableGroups = {
     "extract18",
     "extract19",
     "extract20",
-
     "extract21",
     "extract22",
     "extract23",
@@ -804,7 +795,7 @@ ctld.extractableGroups = {
 -- ************** Logistics UNITS FOR CRATE SPAWNING ******************
 
 -- Use any of the predefined names or set your own ones
--- When a logistic unit is destroyed, you will no longer be able to spawn crates
+-- PLEASE NOTE: When a logistic unit is destroyed, you will no longer be able to spawn crates
 ctld.dynamicLogisticUnitsIndex = 0 -- This is the unit that will be spawned first and then subsequent units will be from the next in the list
 ctld.logisticUnits = {
     "logistic1",
@@ -834,7 +825,6 @@ ctld.vehicleTransportEnabled = {
 -----------------[[ unit_config.lua ]]-----------------
 
 -- ************** Units able to use DCS dynamic cargo system ******************
--- DCS (version) added the ability to load and unload cargo from aircraft.
 -- Units listed here will spawn a cargo static that can be loaded with the standard DCS cargo system
 -- We will also use this to make modifications to the menu and other checks and messages
 ctld.dynamicCargoUnits = {
@@ -847,11 +837,9 @@ ctld.dynamicCargoUnits = {
 
 -- ************** Maximum Units SETUP for UNITS ******************
 -- Put the name of the Unit you want to limit group sizes too
--- i.e
--- ["UH-1H"] = 10,
+-- e.g ["UH-1H"] = 10,
 --
--- Will limit UH1 to only transport groups with a size 10 or less
--- Make sure the unit name is exactly right or it wont work
+-- This will limit UH1 to only transport groups with a size 10 or less. Make sure the unit name is exactly right or it wont work
 
 ctld.unitLoadLimits = {
     -- Remove the -- below to turn on options
@@ -859,24 +847,25 @@ ctld.unitLoadLimits = {
     -- ["SA342L"] = 4,
     -- ["SA342M"] = 4,
 
-    --%%%%% MODS %%%%%
-    --["Bronco-OV-10A"] = 4,
+    -- MODS 
     ["Hercules"] = 30,
-    --["SK-60"] = 1,
     ["UH-60L"] = 12,
+    --["Bronco-OV-10A"] = 4,
+    --["SK-60"] = 1,
     --["T-45"] = 1,
 
-    --%%%%% CHOPPERS %%%%%
+    -- CHOPPERS 
     ["Mi-8MT"] = 16,
     ["Mi-24P"] = 10,
+    ["UH-1H"] = 8,
+    ["CH-47Fbl1"] = 33,
     --["SA342L"] = 4,
     --["SA342M"] = 4,
     --["SA342Mistral"] = 4,
     --["SA342Minigun"] = 3,
-    ["UH-1H"] = 8,
-    ["CH-47Fbl1"] = 33,
 
-    --%%%%% AIRCRAFTS %%%%%
+    -- AIRCRAFTS 
+    ["C-130J-30"] = 80
     --["C-101EB"] = 1,
     --["C-101CC"] = 1,
     --["Christen Eagle II"] = 1,
@@ -891,9 +880,8 @@ ctld.unitLoadLimits = {
     --["Mirage-F1DDA"] = 1,
     --["Su-25T"] = 1,
     --["Yak-52"] = 1,
-    ["C-130J-30"] = 80
 
-    --%%%%% WARBIRDS %%%%%
+    -- WARBIRDS 
     --["Bf-109K-4"] = 1,
     --["Fw 190A8"] = 1,
     --["FW-190D9"] = 1,
@@ -908,10 +896,8 @@ ctld.unitLoadLimits = {
     --["TF-51D"] = 1,
 }
 
--- Put the name of the Unit you want to enable loading multiple crates
+-- Put the name of the Unit you want to enable loading multiple crates and set the limit
 ctld.internalCargoLimits = {
-
-    -- Remove the -- below to turn on options
     ["Mi-8MT"] = 2,
     ["CH-47Fbl1"] = 8,
     ["C-130J-30"] = 20
@@ -923,13 +909,10 @@ ctld.internalCargoLimits = {
 -- NOTE - the unit must've been listed in the transportPilotNames list above
 -- This can be used in conjunction with the options above for group sizes
 -- By default you can load both crates and troops unless overriden below
--- i.e
--- ["UH-1H"] = {crates=true, troops=false},
 --
--- Will limit UH1 to only transport CRATES but NOT TROOPS
---
--- ["SA342Mistral"] = {crates=fales, troops=true},
--- Will allow Mistral Gazelle to only transport crates, not troops
+-- Examples:
+-- ["UH-1H"] = {crates=true, troops=false}, -- Will limit UH1 to only transport CRATES but NOT TROOPS
+-- ["SA342Mistral"] = {crates=fales, troops=true}, --Will allow Mistral Gazelle to only transport crates, not troops
 
 ctld.unitActions = {
 
@@ -938,19 +921,19 @@ ctld.unitActions = {
     -- ["SA342L"] = {crates=false, troops=true},
     -- ["SA342M"] = {crates=false, troops=true},
 
-    --%%%%% MODS %%%%%
-    --["Bronco-OV-10A"] = {crates=true, troops=true},
+    -- MODS 
     ["Hercules"] = { crates = true, troops = true },
     ["SK-60"] = { crates = true, troops = true },
     ["UH-60L"] = { crates = true, troops = true },
     ["C-130J-30"] = { crates = true, troops = true },
+    --["Bronco-OV-10A"] = {crates=true, troops=true},
     --["T-45"] = {crates=true, troops=true},
 
-    --%%%%% CHOPPERS %%%%%
-    --["Ka-50"] = {crates=true, troops=false},
-    --["Ka-50_3"] = {crates=true, troops=false},
+    -- CHOPPERS 
     ["Mi-8MT"] = { crates = true, troops = true },
     ["Mi-24P"] = { crates = true, troops = true },
+    --["Ka-50"] = {crates=true, troops=false},
+    --["Ka-50_3"] = {crates=true, troops=false},
     --["SA342L"] = {crates=false, troops=true},
     --["SA342M"] = {crates=false, troops=true},
     --["SA342Mistral"] = {crates=false, troops=true},
@@ -958,7 +941,7 @@ ctld.unitActions = {
     ["UH-1H"] = { crates = true, troops = true },
     ["CH-47Fbl1"] = { crates = true, troops = true },
 
-    --%%%%% AIRCRAFTS %%%%%
+    -- AIRCRAFTS 
     --["C-101EB"] = {crates=true, troops=true},
     --["C-101CC"] = {crates=true, troops=true},
     --["Christen Eagle II"] = {crates=true, troops=true},
@@ -974,7 +957,7 @@ ctld.unitActions = {
     --["Su-25T"]= {crates=true, troops=false},
     --["Yak-52"] = {crates=true, troops=true},
 
-    --%%%%% WARBIRDS %%%%%
+    -- WARBIRDS 
     --["Bf-109K-4"] = {crates=true, troops=false},
     --["Fw 190A8"] = {crates=true, troops=false},
     --["FW-190D9"] = {crates=true, troops=false},
@@ -993,7 +976,6 @@ ctld.unitActions = {
 -----------------[[ infantry_config.lua ]]-----------------
 
 -- ************** WEIGHT CALCULATIONS FOR INFANTRY GROUPS ******************
-
 -- Infantry groups weight is calculated based on the soldiers' roles, and the weight of their kit
 -- Every soldier weights between 90% and 120% of ctld.SOLDIER_WEIGHT, and they all carry a backpack and their helmet (ctld.KIT_WEIGHT)
 -- Standard grunts have a rifle and ammo (ctld.RIFLE_WEIGHT)
@@ -1023,6 +1005,7 @@ ctld.JTAC_WEIGHT = 15    -- kg
 -- You must add a name to the group for it to work
 -- You can also add an optional coalition side to limit the group to one side
 -- for the side - 2 is BLUE and 1 is RED
+
 ctld.loadableGroups = {
     { name = ctld.i18n_translate("Standard Group"),                   inf = 6,    mg = 2,  at = 2 }, -- will make a loadable group with 6 infantry, 2 MGs and 2 anti-tank for both coalitions
     { name = ctld.i18n_translate("Anti Air"),                         inf = 2,    aa = 3 },
@@ -1041,29 +1024,28 @@ ctld.loadableGroups = {
     { name = ctld.i18n_translate("5x - Mortar Squad"),                mortar = 30 },
     -- {name = ctld.i18n_translate("Mortar Squad Red"), inf = 2, mortar = 5, side =1 }, --would make a group loadable by RED only
 }
+
 -----------------[[ END OF infantry_config.lua ]]-----------------
 -----------------[[ spawn_config.lua ]]-----------------
 
 -- ************** SPAWNABLE CRATES ******************
--- Weights must be unique as we use the weight to change the cargo to the correct unit
--- when we unpack
---
+-- Crates you can spawn via F10 MENU
+-- weight is in KG
+-- Desc is the description on the F10 MENU
+-- unit is the model name of the unit to spawn
+-- cratesRequired - if set requires that many crates of the same type within 100m of each other in order build the unit
+-- side is optional but 2 is BLUE and 1 is RED
+
+-- Some descriptions are filtered to determine if JTAC or not!
+-- PLEASE NOTE: Weights must be unique as we use the weight to change the cargo to the correct unit when we unpack
+
 ctld.spawnableCrates = {
     -- name of the sub menu on F10 for spawning crates
     ["Combat Vehicles"] = {
-        --crates you can spawn
-        -- weight in KG
-        -- Desc is the description on the F10 MENU
-        -- unit is the model name of the unit to spawn
-        -- cratesRequired - if set requires that many crates of the same type within 100m of each other in order build the unit
-        -- side is optional but 2 is BLUE and 1 is RED
-
-        -- Some descriptions are filtered to determine if JTAC or not!
-
         --- BLUE
         { weight = 1000.01,                                desc = ctld.i18n_translate("Humvee - MG"),                      unit = "M1043 HMMWV Armament", side = 2 }, --careful with the names as the script matches the desc to JTAC types
         { weight = 1000.02,                                desc = ctld.i18n_translate("Humvee - TOW"),                     unit = "M1045 HMMWV TOW",      side = 2, cratesRequired = 2 },
-        { multiple = { 1000.02,1000.02 },                   desc = ctld.i18n_translate("Humvee - TOW - All crates"),        side = 2 },
+        { multiple = { 1000.02,1000.02 },                  desc = ctld.i18n_translate("Humvee - TOW - All crates"),        side = 2 },
         { weight = 1000.03,                                desc = ctld.i18n_translate("Light Tank - MRAP"),                unit = "MaxxPro_MRAP",         side = 2, cratesRequired = 2 },
         { multiple = { 1000.03, 1000.03 },                 desc = ctld.i18n_translate("Light Tank - MRAP - All crates"),   side = 2 },
         { weight = 1000.04,                                desc = ctld.i18n_translate("Med Tank - LAV-25"),                unit = "LAV-25",               side = 2, cratesRequired = 3 },
@@ -1074,7 +1056,7 @@ ctld.spawnableCrates = {
         --- RED
         { weight = 1000.11,                                desc = ctld.i18n_translate("BTR-D"),                            unit = "BTR_D",                side = 1 },
         { weight = 1000.12,                                desc = ctld.i18n_translate("BRDM-2"),                           unit = "BRDM-2",               side = 1 },
-        -- need more redfor!
+
     },
     ["Support"] = {
         --- BLUE
@@ -1094,10 +1076,8 @@ ctld.spawnableCrates = {
         --- Both
         { weight = 1001.21,                       desc = ctld.i18n_translate("EWR Radar"),                        unit = "FPS-117",           cratesRequired = 3 },
         { multiple = { 1001.21, 1001.21, 1001.21 }, desc = ctld.i18n_translate("EWR Radar - All crates") },
-        
         { weight = 1001.22,                         desc = ctld.i18n_translate("FOB Crate - Small"),                unit = "FOB-SMALL" }, -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
         { multiple = { 1001.22, 1001.22, 1001.22 }, desc = ctld.i18n_translate("FOB Crate - Small - All crates"),                unit = "FOB-SMALL" }, -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
-
 
     },
     ["Artillery"] = {
@@ -1143,7 +1123,6 @@ ctld.spawnableCrates = {
     },
     ["SAM mid range"] = {
         --- BLUE
-        -- HAWK System
         { weight = 1004.01,                       desc = ctld.i18n_translate("HAWK Launcher"),             unit = "Hawk ln",              side = 2 },
         { weight = 1004.02,                       desc = ctld.i18n_translate("HAWK Search Radar"),         unit = "Hawk sr",              side = 2 },
         { weight = 1004.03,                       desc = ctld.i18n_translate("HAWK Track Radar"),          unit = "Hawk tr",              side = 2 },
@@ -1151,25 +1130,17 @@ ctld.spawnableCrates = {
         { weight = 1004.05,                       desc = ctld.i18n_translate("HAWK CWAR"),                 unit = "Hawk cwar",            side = 2 },
         { weight = 1004.06,                       desc = ctld.i18n_translate("HAWK Repair"),               unit = "HAWK Repair",          side = 2 },
         { multiple = { 1004.01, 1004.02, 1004.03 }, desc = ctld.i18n_translate("HAWK - All crates"),       side = 2 },
-        -- End of HAWK
-
-        -- NASAMS Sysyem
         { weight = 1004.11,                       desc = ctld.i18n_translate("NASAMS Launcher 120C"),      unit = "NASAMS_LN_C",          side = 2 },
         { weight = 1004.12,                       desc = ctld.i18n_translate("NASAMS Search/Track Radar"), unit = "NASAMS_Radar_MPQ64F1", side = 2 },
         { weight = 1004.13,                       desc = ctld.i18n_translate("NASAMS Command Post"),       unit = "NASAMS_Command_Post",  side = 2 },
         { weight = 1004.14,                       desc = ctld.i18n_translate("NASAMS Repair"),             unit = "NASAMS Repair",        side = 2 },
         { multiple = { 1004.11, 1004.12, 1004.13 }, desc = ctld.i18n_translate("NASAMS - All crates"),     side = 2 },
-        -- End of NASAMS
 
         --- RED
-        -- KUB SYSTEM
         { weight = 1004.21,                       desc = ctld.i18n_translate("KUB Launcher"),              unit = "Kub 2P25 ln",          side = 1 },
         { weight = 1004.22,                       desc = ctld.i18n_translate("KUB Radar"),                 unit = "Kub 1S91 str",         side = 1 },
         { weight = 1004.23,                       desc = ctld.i18n_translate("KUB Repair"),                unit = "KUB Repair",           side = 1 },
         { multiple = { 1004.21, 1004.22 },        desc = ctld.i18n_translate("KUB - All crates"),          side = 1 },
-        -- End of KUB
-
-        -- BUK System
         { weight = 1004.31,                       desc = ctld.i18n_translate("BUK Launcher"),              unit = "SA-11 Buk LN 9A310M1", side = 1 },
         { weight = 1004.32,                       desc = ctld.i18n_translate("BUK Search Radar"),          unit = "SA-11 Buk SR 9S18M1",  side = 1 },
         { weight = 1004.33,                       desc = ctld.i18n_translate("BUK CC Radar"),              unit = "SA-11 Buk CC 9S470M1", side = 1 },
@@ -1179,7 +1150,6 @@ ctld.spawnableCrates = {
     },
     ["SAM long range"] = {
         --- BLUE
-        -- Patriot System
         { weight = 1005.01,                                         desc = ctld.i18n_translate("Patriot Launcher"),            unit = "Patriot ln",        side = 2 },
         { weight = 1005.02,                                         desc = ctld.i18n_translate("Patriot Radar"),               unit = "Patriot str",       side = 2 },
         { weight = 1005.03,                                         desc = ctld.i18n_translate("Patriot ECS"),                 unit = "Patriot ECS",       side = 2 },
@@ -1188,9 +1158,6 @@ ctld.spawnableCrates = {
         { weight = 1005.06,                                         desc = ctld.i18n_translate("Patriot AMG (optional)"),      unit = "Patriot AMG",       side = 2 },
         { weight = 1005.07,                                         desc = ctld.i18n_translate("Patriot Repair"),              unit = "Patriot Repair",    side = 2 },
         { multiple = { 1005.01, 1005.02, 1005.03 },                 desc = ctld.i18n_translate("Patriot - All crates"),        side = 2 },
-        -- End of Patriot
-
-        -- S-300 SYSTEM
         { weight = 1005.11,                                         desc = ctld.i18n_translate("S-300 Grumble TEL C"),         unit = "S-300PS 5P85C ln",  side = 1 },
         { weight = 1005.12,                                         desc = ctld.i18n_translate("S-300 Grumble Flap Lid-A TR"), unit = "S-300PS 40B6M tr",  side = 1 },
         { weight = 1005.13,                                         desc = ctld.i18n_translate("S-300 Grumble Clam Shell SR"), unit = "S-300PS 40B6MD sr", side = 1 },
@@ -1198,16 +1165,14 @@ ctld.spawnableCrates = {
         { weight = 1005.15,                                         desc = ctld.i18n_translate("S-300 Grumble C2"),            unit = "S-300PS 54K6 cp",   side = 1 },
         { weight = 1005.16,                                         desc = ctld.i18n_translate("S-300 Repair"),                unit = "S-300 Repair",      side = 1 },
         { multiple = { 1005.11, 1005.12, 1005.13, 1005.14, 1005.15 }, desc = ctld.i18n_translate("Patriot - All crates"),      side = 1 },
-        -- End of S-300
     },
     ["Drone"] = {
         --- BLUE MQ-9 Repear
         { weight = 1006.01, desc = ctld.i18n_translate("MQ-9 Repear - JTAC"),    unit = "MQ-9 Reaper",    side = 2 },
-        -- End of BLUE MQ-9 Repear
 
         --- RED MQ-1A Predator
         { weight = 1006.11, desc = ctld.i18n_translate("MQ-1A Predator - JTAC"), unit = "RQ-1A Predator", side = 1 },
-        -- End of RED MQ-1A Predator
+
     },
 }
 
@@ -1274,6 +1239,7 @@ ctld.spawnableCratesModels = {
         ["shape_name"] = "trunks_small_cargo",
         ["type"] = "trunks_small_cargo",
 ]] --
+ 
 -----------------[[ END OF spawn_config.lua ]]-----------------
 -----------------[[ ME_functions.lua ]]-----------------
 
