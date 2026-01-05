@@ -285,7 +285,7 @@ ctld.i18n["en"]["%1 successfully deployed a full %2 in the field. \n\nAA Active 
 ctld.i18n["en"]["%1 successfully repaired a full %2 in the field."] = ""
 ctld.i18n["en"]["Cannot repair %1. No damaged %2 within 300m"] = ""
 ctld.i18n["en"]["%1 successfully deployed %2 to the field using %3 crates."] = ""
-ctld.i18n["en"]["Cannot build %1!\n\nIt requires %2 crates and there are %3 \n\nOr the crates are not within 300m of each other"] =
+ctld.i18n["en"]["Cannot build %1!\n\nIt requires %2 crates and there are %3 \n\nOr the crates are not close enought to each other"] =
 ""
 ctld.i18n["en"]["%1 dropped %2 smoke."] = ""
 
@@ -422,7 +422,8 @@ ctld.slingLoad = false        -- if false, crates can be used WITHOUT slingloadi
 -- Set staticBugFix    to FALSE if use set ctld.slingLoad to TRUE
 ctld.enableSmokeDrop = true                                                   -- if false, helis and c-130 will not be able to drop smoke
 ctld.maxExtractDistance = 125                                                 -- max distance from vehicle to troops to allow a group extraction
-ctld.maximumDistanceLogistic = 200                                            -- max distance from vehicle to logistics to allow a loading or spawning operation
+ctld.maximumDistanceLogistic = 1000                                            -- max distance from vehicle to logistics to allow a loading or spawning operation
+ctld.maxDistanceBetweenCratesForBuilding = 1000                     -- max distance between crates to allow building a vehicle or AA system
 ctld.enableRepackingVehicles = true                                           -- if true, vehicles can be repacked into crates
 ctld.maximumDistanceRepackableUnitsSearch = 200                               -- max distance from transportUnit to search force repackable units in meters
 ctld.maximumSearchDistance = 4000                                             -- max distance for troops to search for enemy
@@ -525,28 +526,28 @@ ctld.JTAC_allow9Line = true          -- if true, allow players to ask for a 9Lin
 --pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
 ctld.pickupZones = {
     { "pickzone1",   "blue", -1, "yes", 0 },
-    { "pickzone2",   "red",  -1, "yes", 0 },
-    { "pickzone3",   "none", -1, "yes", 0 },
-    { "pickzone4",   "none", -1, "yes", 0 },
-    { "pickzone5",   "none", -1, "yes", 0 },
-    { "pickzone6",   "none", -1, "yes", 0 },
-    { "pickzone7",   "none", -1, "yes", 0 },
-    { "pickzone8",   "none", -1, "yes", 0 },
-    { "pickzone9",   "none", 5,  "yes", 1 },    -- limits pickup zone 9 to 5 groups of soldiers or vehicles, only red can pick up
-    { "pickzone10",  "none", 10, "yes", 2 },    -- limits pickup zone 10 to 10 groups of soldiers or vehicles, only blue can pick up
+    -- { "pickzone2",   "red",  -1, "yes", 0 },
+    -- { "pickzone3",   "none", -1, "yes", 0 },
+    -- { "pickzone4",   "none", -1, "yes", 0 },
+    -- { "pickzone5",   "none", -1, "yes", 0 },
+    -- { "pickzone6",   "none", -1, "yes", 0 },
+    -- { "pickzone7",   "none", -1, "yes", 0 },
+    -- { "pickzone8",   "none", -1, "yes", 0 },
+    -- { "pickzone9",   "none", 5,  "yes", 1 },    -- limits pickup zone 9 to 5 groups of soldiers or vehicles, only red can pick up
+    -- { "pickzone10",  "none", 10, "yes", 2 },    -- limits pickup zone 10 to 10 groups of soldiers or vehicles, only blue can pick up
 
-    { "pickzone11",  "blue", 20, "no",  2 },    -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
-    { "pickzone12",  "red",  20, "no",  1 },    -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
-    { "pickzone13",  "none", -1, "yes", 0 },
-    { "pickzone14",  "none", -1, "yes", 0 },
-    { "pickzone15",  "none", -1, "yes", 0 },
-    { "pickzone16",  "none", -1, "yes", 0 },
-    { "pickzone17",  "none", -1, "yes", 0 },
-    { "pickzone18",  "none", -1, "yes", 0 },
-    { "pickzone19",  "none", 5,  "yes", 0 },
-    { "pickzone20",  "none", 10, "yes", 0, 1000 },     -- optional extra flag number to store the current number of groups available in
+    -- { "pickzone11",  "blue", 20, "no",  2 },    -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
+    -- { "pickzone12",  "red",  20, "no",  1 },    -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
+    -- { "pickzone13",  "none", -1, "yes", 0 },
+    -- { "pickzone14",  "none", -1, "yes", 0 },
+    -- { "pickzone15",  "none", -1, "yes", 0 },
+    -- { "pickzone16",  "none", -1, "yes", 0 },
+    -- { "pickzone17",  "none", -1, "yes", 0 },
+    -- { "pickzone18",  "none", -1, "yes", 0 },
+    -- { "pickzone19",  "none", 5,  "yes", 0 },
+    -- { "pickzone20",  "none", 10, "yes", 0, 1000 },     -- optional extra flag number to store the current number of groups available in
 
-    { "USA Carrier", "blue", 10, "yes", 0, 1001 },     -- instead of a Zone Name you can also use the UNIT NAME of a ship
+    -- { "USA Carrier", "blue", 10, "yes", 0, 1001 },     -- instead of a Zone Name you can also use the UNIT NAME of a ship
 }
 
 -- dropOffZones = {"name","smoke colour",0,side 1 = Red or 2 = Blue or 0 = Both sides}
@@ -3881,13 +3882,32 @@ function ctld.getCratesAndDistance(_heli)
         local _crate = ctld.getCrateObject(_crateName)
 
         --in air seems buggy with crates so if in air is true, get the height above ground and the speed magnitude
-        if _crate ~= nil and _crate:getLife() > 0
-            and (ctld.inAir(_crate) == false) then
-            local _dist = ctld.getDistance(_crate:getPoint(), _heli:getPoint())
+        if _crate ~= nil and _crate:getLife() > 0 then
+            local _isInAir = ctld.inAir(_crate)
+            
+            -- For airdropped crates, also check if they're effectively on ground by checking height and velocity
+            local _canUse = not _isInAir
+            if _isInAir then
+                local _cratePoint = _crate:getPoint()
+                local _terrainHeight = land.getHeight({x = _cratePoint.x, y = _cratePoint.z})
+                local _crateHeight = _cratePoint.y - _terrainHeight
+                local _velocity = _crate:getVelocity()
+                local _speed = mist.vec.mag(_velocity)
+                
+                -- Consider crate as landed if it's close to ground and slow/stopped
+                if _crateHeight < 5 and _speed < 1 then
+                    _canUse = true
+                    ctld.logTrace("FG_ Airdropped crate considered landed: %s (height: %.2f, speed: %.2f)", _crateName, _crateHeight, _speed)
+                end
+            end
+            
+            if _canUse then
+                local _dist = ctld.getDistance(_crate:getPoint(), _heli:getPoint())
 
-            local _crateDetails = { crateUnit = _crate, dist = _dist, details = _details }
+                local _crateDetails = { crateUnit = _crate, dist = _dist, details = _details }
 
-            table.insert(_crates, _crateDetails)
+                table.insert(_crates, _crateDetails)
+            end
         end
     end
 
@@ -3914,6 +3934,93 @@ function ctld.getCratesAndDistance(_heli)
     return _crates
 end
 
+function ctld.getAirdropCratesAndDistance(_heli)
+    local _crates = {}
+
+    local _allCrates
+    if _heli:getCoalition() == 1 then
+        _allCrates = ctld.spawnedCratesRED
+    else
+        _allCrates = ctld.spawnedCratesBLUE
+    end
+
+    for _crateName, _details in pairs(_allCrates) do
+        --get crate
+        local _crate = ctld.getCrateObject(_crateName)
+
+        --enhanced detection for airdrops - same logic as updated getCratesAndDistance
+        if _crate ~= nil and _crate:getLife() > 0 then
+            local _isInAir = ctld.inAir(_crate)
+            
+            -- For airdropped crates, also check if they're effectively on ground by checking height and velocity
+            local _canUse = not _isInAir
+            if _isInAir then
+                local _cratePoint = _crate:getPoint()
+                local _terrainHeight = land.getHeight({x = _cratePoint.x, y = _cratePoint.z})
+                local _crateHeight = _cratePoint.y - _terrainHeight
+                local _velocity = _crate:getVelocity()
+                local _speed = mist.vec.mag(_velocity)
+                
+                -- Consider crate as landed if it's close to ground and slow/stopped
+                if _crateHeight < 5 and _speed < 1 then
+                    _canUse = true
+                    ctld.logTrace("FG_ Airdropped crate considered landed: %s (height: %.2f, speed: %.2f)", _crateName, _crateHeight, _speed)
+                end
+            end
+            
+            if _canUse then
+                local _dist = ctld.getDistance(_crate:getPoint(), _heli:getPoint())
+
+                local _crateDetails = { crateUnit = _crate, dist = _dist, details = _details }
+
+                table.insert(_crates, _crateDetails)
+                ctld.logTrace("FG_ Added airdrop crate: %s at distance %.1f", _crateName, _dist)
+            end
+        end
+    end
+
+    -- Also check FOB crates with same enhanced detection
+    local _fobCrates
+    if _heli:getCoalition() == 1 then
+        _fobCrates = ctld.droppedFOBCratesRED
+    else
+        _fobCrates = ctld.droppedFOBCratesBLUE
+    end
+
+    for _crateName, _details in pairs(_fobCrates) do
+        --get crate
+        local _crate = ctld.getCrateObject(_crateName)
+
+        if _crate ~= nil and _crate:getLife() > 0 then
+            local _isInAir = ctld.inAir(_crate)
+            
+            local _canUse = not _isInAir
+            if _isInAir then
+                local _cratePoint = _crate:getPoint()
+                local _terrainHeight = land.getHeight({x = _cratePoint.x, y = _cratePoint.z})
+                local _crateHeight = _cratePoint.y - _terrainHeight
+                local _velocity = _crate:getVelocity()
+                local _speed = mist.vec.mag(_velocity)
+                
+                if _crateHeight < 5 and _speed < 1 then
+                    _canUse = true
+                    ctld.logTrace("FG_ Airdropped FOB crate considered landed: %s", _crateName)
+                end
+            end
+            
+            if _canUse then
+                local _dist = ctld.getDistance(_crate:getPoint(), _heli:getPoint())
+
+                local _crateDetails = { crateUnit = _crate, dist = _dist, details = { unit = "FOB" }, }
+
+                table.insert(_crates, _crateDetails)
+            end
+        end
+    end
+
+    return _crates
+end
+
 function ctld.getClosestCrate(_heli, _crates, _type)
     local _closetCrate = nil
     local _shortestDistance = -1
@@ -3925,6 +4032,30 @@ function ctld.getClosestCrate(_heli, _crates, _type)
             _distance = _crate.dist
 
             if _distance ~= nil and (_shortestDistance == -1 or _distance < _shortestDistance) and _distance > _minimumDistance and _distance < _maxDistance then
+                _shortestDistance = _distance
+                _closetCrate = _crate
+            end
+        end
+    end
+
+    return _closetCrate
+end
+
+function ctld.getClosestCrateOnGround(_heli, _crates, _type)
+    local _closetCrate = nil
+    local _shortestDistance = -1
+    local _distance = 0
+    local _minimumDistance = 5     -- prevents dynamic cargo crates from unpacking while in cargo hold
+    local _maxDistance     = 30000    -- prevents onboard dynamic cargo crates from unpacking requested by other helo
+
+    for _, _crate in pairs(_crates) do
+        if (_crate.details.unit == _type or _type == nil) then
+            _distance = _crate.dist
+            if _distance ~= nil and (_shortestDistance == -1 
+            or  _distance < _shortestDistance) 
+            and _distance > _minimumDistance 
+            and _distance < _maxDistance 
+            and ctld.heightDiff(_crate.crateUnit) <= 1 then
                 _shortestDistance = _distance
                 _closetCrate = _crate
             end
@@ -4022,6 +4153,103 @@ function ctld.unpackCrates(_arguments)
                     -- multicrate
 
                     ctld.unpackMultiCrate(_heli, _crate, _crates)
+
+                    return
+                else
+                    ctld.logTrace("single crate =  %s", ctld.p(_arguments))
+                    -- single crate
+                    --local _cratePoint = _crate.crateUnit:getPoint()
+                    local _point = ctld.getPointInFrontSector(_heli, ctld.getSecureDistanceFromUnit(_heli:getName()))
+                    if ctld.unitDynamicCargoCapable(_heli) == true then
+                        _point = ctld.getPointInRearSector(_heli, ctld.getSecureDistanceFromUnit(_heli:getName()))
+                    end
+                    local _crateName  = _crate.crateUnit:getName()
+                    local _crateHdg   = mist.getHeading(_crate.crateUnit, true)
+
+                    --remove crate
+                    --    if ctld.slingLoad == false then
+                    _crate.crateUnit:destroy()
+                    -- end
+                    ctld.logTrace("_crate =  %s", ctld.p(_crate))
+                    local _spawnedGroups = ctld.spawnCrateGroup(_heli, { _point }, { _crate.details.unit }, { _crateHdg })
+                    ctld.logTrace("_spawnedGroups =  %s", ctld.p(_spawnedGroups))
+
+                    if _heli:getCoalition() == 1 then
+                        ctld.spawnedCratesRED[_crateName] = nil
+                    else
+                        ctld.spawnedCratesBLUE[_crateName] = nil
+                    end
+
+                    ctld.processCallback({ unit = _heli, crate = _crate, spawnedGroup = _spawnedGroups, action = "unpack" })
+
+                    if _crate.details.unit == "1L13 EWR" then
+                        ctld.addEWRTask(_spawnedGroups)
+
+                        --             env.info("Added EWR")
+                    end
+
+
+                    trigger.action.outTextForCoalition(_heli:getCoalition(),
+                            ctld.i18n_translate("%1 successfully deployed %2 to the field", ctld.getPlayerNameOrType(_heli),
+                            _crate.details.desc), 10)
+                    timer.scheduleFunction(ctld.autoUpdateRepackMenu, { reschedule = false }, timer.getTime() + 1)  -- for add unpacked unit in repack menu
+                    if ctld.isJTACUnitType(_crate.details.unit) and ctld.JTAC_dropEnabled then
+                        local _code = table.remove(ctld.jtacGeneratedLaserCodes, 1)
+                        --put to the end
+                        table.insert(ctld.jtacGeneratedLaserCodes, _code)
+
+                        ctld.JTACStart(_spawnedGroups:getName(), _code)                         --(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
+                    end
+                end
+            else
+                ctld.displayMessageToGroup(_heli,
+                    ctld.i18n_translate("No friendly crates close enough to unpack, or crate too close to aircraft."), 20)
+            end
+        end
+    end, _arguments)
+
+    if (not _status) then
+        env.error(string.format("CTLD ERROR: %s", _err))
+    end
+end
+
+function ctld.unpackC130Airdrop(_arguments)
+    ctld.logTrace("FG_ ctld.unpackC130Airdrop._arguments =  %s", ctld.p(_arguments))
+    local _status, _err = pcall(function(_args)
+        local _heli = ctld.getTransportUnit(_args[1])
+        ctld.logTrace("FG_ ctld.unpackC130Airdrop._args =  %s", ctld.p(_args))
+        if _heli ~= nil and ctld.inAir(_heli) == true then
+            local _crates = ctld.getCratesAndDistance(_heli)
+            local _crate = ctld.getClosestCrateOnGround(_heli, _crates)
+            ctld.logTrace("FG_ ctld.unpackC130Airdrop._crate =  %s", ctld.p(_crate))
+            ctld.logTrace("FG_ ctld.unpackC130Airdrop._crates =  %s", ctld.p(_crates))
+
+            if _crate ~= nil and _crate.dist < 30000
+                and (_crate.details.unit == "FOB" or _crate.details.unit == "FOB-SMALL") then
+                ctld.unpackFOBCrates(_crates, _heli)
+                return
+            elseif _crate ~= nil and _crate.dist < 30000 then
+                if ctld.forceCrateToBeMoved and ctld.crateMove[_crate.crateUnit:getName()] and not ctld.unitDynamicCargoCapable(_heli) then
+                    ctld.displayMessageToGroup(_heli,
+                        ctld.i18n_translate("Sorry you must move this crate before you unpack it!"), 20)
+                    return
+                end
+
+
+                local _aaTemplate = ctld.getAATemplate(_crate.details.unit)
+
+                if _aaTemplate then
+                    if _crate.details.unit == _aaTemplate.repair then
+                        ctld.repairAASystem(_heli, _crate, _aaTemplate)
+                    else
+                        ctld.unpackAirdropAASystem(_heli, _crate, _crates, _aaTemplate)
+                    end
+
+                    return                     -- stop processing
+                    -- is multi crate?
+                elseif _crate.details.cratesRequired ~= nil and _crate.details.cratesRequired > 1 then
+                    -- multicrate for airdrop
+                    ctld.unpackAirdropMultiCrate(_heli, _crate, _crates)
 
                     return
                 else
@@ -4975,13 +5203,235 @@ function ctld.countCompleteAASystems(_heli)
     return _count
 end
 
+function ctld.unpackAirdropAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTemplate)
+    ctld.logTrace("FG_ ctld.unpackAirdropAASystem, _nearestCrate = %s", ctld.p(_nearestCrate))
+    ctld.logTrace("FG_ ctld.unpackAirdropAASystem, _aaSystemTemplate = %s", ctld.p(_aaSystemTemplate))
+
+    -- Use enhanced airdrop crate detection
+    local _enhancedCrates = ctld.getAirdropCratesAndDistance(_heli)
+    
+    if ctld.rearmAASystem(_heli, _nearestCrate, _enhancedCrates, _aaSystemTemplate) then
+        -- rearmed system
+        return
+    end
+
+    local _systemParts = {}
+
+    --initialise list of parts
+    for _, _part in pairs(_aaSystemTemplate.parts) do
+        local _systemPart = { name = _part.name, desc = _part.desc, launcher = _part.launcher, amount = _part.amount, NoCrate =
+        _part.NoCrate, found = 0, required = 1 }
+        -- if the part is a NoCrate required, it's found by default
+        if _systemPart.NoCrate ~= nil then
+            _systemPart.found = 1
+        end
+        _systemParts[_part.name] = _systemPart
+    end
+
+    local _cratePositions = {}
+    local _crateHdg = {}
+
+    local crateDistance = 500
+
+    -- find all crates close enough and add them to the list if they're part of the AA System
+    -- Use enhanced crates instead of nearbyCrates for airdrop detection
+    for _, _enhancedCrate in pairs(_enhancedCrates) do
+        ctld.logTrace("FG_ Processing airdrop crate: %s", ctld.p(_enhancedCrate))
+        
+        -- Check distance between this crate and the nearest crate, not distance to helicopter
+        local _distBetweenCrates = ctld.getDistance(_enhancedCrate.crateUnit:getPoint(), _nearestCrate.crateUnit:getPoint())
+        
+        if _distBetweenCrates < crateDistance then
+            local _name = _enhancedCrate.details.unit
+            ctld.logTrace("FG_ Airdrop AA crate name: %s", ctld.p(_name))
+
+            if _systemParts[_name] ~= nil then
+                local foundCount = _systemParts[_name].found
+                ctld.logTrace("FG_ Found airdrop AA system part: %s (foundCount: %d)", _name, foundCount)
+
+                if not _cratePositions[_name] then
+                    _cratePositions[_name] = {}
+                end
+                if not _crateHdg[_name] then
+                    _crateHdg[_name] = {}
+                end
+
+                -- if this is our first time encountering this part of the system
+                if foundCount == 0 then
+                    local _foundPart = _systemParts[_name]
+
+                    _foundPart.found = 1
+
+                    -- store the number of crates required to compute how many crates will have to be removed later and to see if the system can be deployed
+                    local cratesRequired = _enhancedCrate.details.cratesRequired
+                    ctld.logTrace("FG_ cratesRequired = %s", ctld.p(cratesRequired))
+                    if cratesRequired ~= nil then
+                        _foundPart.required = cratesRequired
+                    end
+
+                    _systemParts[_name] = _foundPart
+                else
+                    -- otherwise, we found another crate for the same part
+                    _systemParts[_name].found = foundCount + 1
+                end
+
+                -- add the crate to the part info along with it's position and heading
+                local crateUnit = _enhancedCrate.crateUnit
+                if not _systemParts[_name].crates then
+                    _systemParts[_name].crates = {}
+                end
+                table.insert(_systemParts[_name].crates, _enhancedCrate)
+                table.insert(_cratePositions[_name], crateUnit:getPoint())
+                table.insert(_crateHdg[_name], mist.getHeading(crateUnit, true))
+            end
+        else
+            ctld.logTrace("FG_ Airdrop AA crate too far: %s at distance %.1f from nearest crate (max: %d)", _enhancedCrate.crateUnit:getName(), _distBetweenCrates, crateDistance)
+        end
+    end
+
+    -- Rest of the function is identical to unpackAASystem but uses the enhanced crate detection results
+
+    -- Compute the centroids for each type of crates and then the centroid of all the system crates 
+    local _crateCentroids = {}
+    local _idxCentroids = {}
+    for _partName, _partPositions in pairs(_cratePositions) do
+        _crateCentroids[_partName] = ctld.getCentroid(_partPositions)
+        table.insert(_idxCentroids, _crateCentroids[_partName])
+    end
+    local _crateCentroid = ctld.getCentroid(_idxCentroids)
+
+    -- Compute the average heading for each type of crates to know the heading to spawn the part
+    local _aveHdg = {}
+    for _partName, _crateHeadings in pairs(_crateHdg) do
+        local crateCount = #_crateHeadings
+        _aveHdg[_partName] = 0
+        for _index, _crateHeading in pairs(_crateHeadings) do
+            _aveHdg[_partName] = _crateHeading / crateCount + _aveHdg[_partName]
+        end
+    end
+
+    local spawnDistance = 50
+    local arcRad = math.pi * 2
+
+    local _txt = ""
+
+    local _posArray = {}
+    local _hdgArray = {}
+    local _typeArray = {}
+    
+    for _name, _systemPart in pairs(_systemParts) do
+        if _systemPart.found < _systemPart.required then
+            _txt = _txt .. ctld.i18n_translate("Missing %1\n", _systemPart.desc)
+        else
+            local _point = _crateCentroids[_name]
+            if _point == nil then
+                _point = _crateCentroid
+                _point = { x = _point.x + math.random(0, 3) * spawnDistance, y = _point.y, z = _point.z +
+                math.random(0, 3) * spawnDistance }
+            end
+
+            local _hdg = _aveHdg[_name]
+            if _hdg == nil then
+                _hdg = math.random(0, arcRad)
+            end
+
+            local partAmount = 1
+            if _systemPart.amount == nil then
+                if _systemPart.launcher ~= nil then
+                    partAmount = ctld.aaLaunchers
+                end
+            else
+                partAmount = _systemPart.amount
+            end
+            
+            if ctld.AASystemCrateStacking then
+                _systemPart.amountFactor = _systemPart.found - _systemPart.found % _systemPart.required
+            else
+                _systemPart.amountFactor = 1
+            end
+            partAmount = partAmount * _systemPart.amountFactor
+
+            if partAmount > 1 then
+                local angular_step = arcRad / partAmount
+
+                for _i = 1, partAmount do
+                    local _angle = (angular_step * (_i - 1) + _hdg) % arcRad
+                    local _xOffset = math.cos(_angle) * spawnDistance
+                    local _yOffset = math.sin(_angle) * spawnDistance
+
+                    table.insert(_posArray, { x = _point.x + _xOffset, y = _point.y, z = _point.z + _yOffset })
+                    table.insert(_hdgArray, _angle)
+                    table.insert(_typeArray, _name)
+                end
+            else
+                table.insert(_posArray, _point)
+                table.insert(_hdgArray, _hdg)
+                table.insert(_typeArray, _name)
+            end
+        end
+    end
+
+    local _activeLaunchers = ctld.countCompleteAASystems(_heli)
+    local _allowed = ctld.getAllowedAASystems(_heli)
+
+    env.info("Active: " .. _activeLaunchers .. " Allowed: " .. _allowed)
+
+    if _activeLaunchers + 1 > _allowed then
+        trigger.action.outTextForCoalition(_heli:getCoalition(),
+            ctld.i18n_translate("Out of parts for AA Systems. Current limit is %1\n", _allowed, 10))
+        return
+    end
+
+    if _txt ~= "" then
+        ctld.displayMessageToGroup(_heli,
+            ctld.i18n_translate("Cannot build %1\n%2\n\nOr the airdrop crates are not close enough together",
+                _aaSystemTemplate.name, _txt), 20)
+        return
+    else
+        -- destroy crates
+        for _name, _systemPart in pairs(_systemParts) do
+            if _systemPart.NoCrate ~= true then
+                local amountToDel = _systemPart.amountFactor * _systemPart.required
+                local DelCounter = 0
+
+                for _index, _crate in pairs(_systemPart.crates) do
+                    if DelCounter < amountToDel then
+                        if _heli:getCoalition() == 1 then
+                            ctld.spawnedCratesRED[_crate.crateUnit:getName()] = nil
+                        else
+                            ctld.spawnedCratesBLUE[_crate.crateUnit:getName()] = nil
+                        end
+
+                        _crate.crateUnit:destroy()
+                        DelCounter = DelCounter + 1
+                    else
+                        break
+                    end
+                end
+            end
+        end
+
+        -- AA SYSTEM READY!
+        local _spawnedGroup = ctld.spawnCrateGroup(_heli, _posArray, _typeArray, _hdgArray)
+
+        ctld.completeAASystems[_spawnedGroup:getName()] = ctld.getAASystemDetails(_spawnedGroup, _aaSystemTemplate)
+
+        ctld.processCallback({ unit = _heli, crate = _nearestCrate, spawnedGroup = _spawnedGroup, action = "unpack" })
+
+        trigger.action.outTextForCoalition(_heli:getCoalition(),
+            ctld.i18n_translate(
+            "%1 successfully deployed a full %2 in the field using airdrop crates. \n\nAA Active System limit is: %3\nActive: %4",
+                ctld.getPlayerNameOrType(_heli), _aaSystemTemplate.name, _allowed, (_activeLaunchers + 1)), 10)
+    end
+end
+
 function ctld.repairAASystem(_heli, _nearestCrate, _aaSystem)
     -- find nearest COMPLETE AA system
     local _nearestHawk = ctld.findNearestAASystem(_heli, _aaSystem)
 
 
 
-    if _nearestHawk ~= nil and _nearestHawk.dist < 300 then
+    if _nearestHawk ~= nil and _nearestHawk.dist < ctld.maxDistanceBetweenCratesForBuilding then
         local _oldHawk = ctld.completeAASystems[_nearestHawk.group:getName()]
 
         --spawn new one
@@ -5022,17 +5472,17 @@ function ctld.repairAASystem(_heli, _nearestCrate, _aaSystem)
         -- end
     else
         ctld.displayMessageToGroup(_heli,
-            ctld.i18n_translate("Cannot repair %1. No damaged %2 within 300m", _aaSystem.name, _aaSystem.name), 10)
+            ctld.i18n_translate("Cannot repair %1. No damaged %2 within %3", _aaSystem.name, _aaSystem.name, ctld.maxDistanceBetweenCratesForBuilding), 10)
     end
 end
 
 function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
-    --ctld.logTrace("FG_ ctld.unpackMultiCrate, _nearestCrate =  %s", ctld.p(_nearestCrate))
+    ctld.logTrace("FG_ ctld.unpackMultiCrate, _nearestCrate =  %s", ctld.p(_nearestCrate))
     -- unpack multi crate
     local _nearbyMultiCrates = {}
 
     for _, _nearbyCrate in pairs(_nearbyCrates) do
-        if _nearbyCrate.dist < 300 then
+        if _nearbyCrate.dist < ctld.maxDistanceBetweenCratesForBuilding then
             if _nearbyCrate.details.unit == _nearestCrate.details.unit then
                 table.insert(_nearbyMultiCrates, _nearbyCrate)
                 if #_nearbyMultiCrates == _nearestCrate.details.cratesRequired then
@@ -5087,8 +5537,99 @@ function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
         end
     else
         local _txt = ctld.i18n_translate(
-        "Cannot build %1!\n\nIt requires %2 crates and there are %3 \n\nOr the crates are not within 300m of each other",
-            _nearestCrate.details.desc, _nearestCrate.details.cratesRequired, #_nearbyMultiCrates)
+        "Cannot build %1!\n\nIt requires %2 crates and there are %3 \n\nOr the crates are not within %4 of each other",
+            _nearestCrate.details.desc, _nearestCrate.details.cratesRequired, #_nearbyMultiCrates, ctld.maxDistanceBetweenCratesForBuilding)
+
+        ctld.displayMessageToGroup(_heli, _txt, 20)
+    end
+end
+
+function ctld.unpackAirdropMultiCrate(_heli, _nearestCrate, _nearbyCrates)
+    ctld.logTrace("FG_ ctld.unpackAirdropMultiCrate, _nearestCrate =  %s", ctld.p(_nearestCrate))
+    
+    -- Get enhanced crate detection for airdrops
+    local _enhancedCrates = ctld.getAirdropCratesAndDistance(_heli)
+    
+    -- unpack multi crate with enhanced detection
+    local _nearbyMultiCrates = {}
+
+    for _, _enhancedCrate in pairs(_enhancedCrates) do
+        if _enhancedCrate.details.unit == _nearestCrate.details.unit then
+            -- Check distance between this crate and the nearest crate, not distance to helicopter
+            local _distBetweenCrates = ctld.getDistance(_enhancedCrate.crateUnit:getPoint(), _nearestCrate.crateUnit:getPoint())
+            
+            if _distBetweenCrates < ctld.maxDistanceBetweenCratesForBuilding then
+                table.insert(_nearbyMultiCrates, _enhancedCrate)
+                ctld.logTrace("FG_ Found matching airdrop crate: %s at distance %.1f from nearest crate", _enhancedCrate.crateUnit:getName(), _distBetweenCrates)
+                if #_nearbyMultiCrates == _nearestCrate.details.cratesRequired then
+                    break
+                end
+            else
+                ctld.logTrace("FG_ Airdrop crate too far: %s at distance %.1f from nearest crate (max: %d)", _enhancedCrate.crateUnit:getName(), _distBetweenCrates, ctld.maxDistanceBetweenCratesForBuilding)
+            end
+        else
+            ctld.logTrace("FG_ Airdrop crate type mismatch: %s has type '%s', expected '%s'", _enhancedCrate.crateUnit:getName(), _enhancedCrate.details.unit, _nearestCrate.details.unit)
+        end
+    end
+
+    ctld.logTrace("FG_ Found %d airdrop crates of required %d", #_nearbyMultiCrates, _nearestCrate.details.cratesRequired)
+
+    --- check crate count
+    if #_nearbyMultiCrates == _nearestCrate.details.cratesRequired then
+        -- For airdrops, spawn at the crate location, not aircraft location
+        local _point = _nearestCrate.crateUnit:getPoint()
+        
+        -- Calculate average position if multiple crates (for better centering)
+        if #_nearbyMultiCrates > 1 then
+            local _totalX, _totalZ = 0, 0
+            for _, _crate in pairs(_nearbyMultiCrates) do
+                local _cratePos = _crate.crateUnit:getPoint()
+                _totalX = _totalX + _cratePos.x
+                _totalZ = _totalZ + _cratePos.z
+            end
+            _point = {
+                x = _totalX / #_nearbyMultiCrates,
+                y = _point.y, -- Keep the Y from the nearest crate
+                z = _totalZ / #_nearbyMultiCrates
+            }
+            ctld.logTrace("FG_ Calculated average spawn position from %d crates: x=%.1f, z=%.1f", #_nearbyMultiCrates, _point.x, _point.z)
+        else
+            ctld.logTrace("FG_ Using single crate position for spawn: x=%.1f, z=%.1f", _point.x, _point.z)
+        end
+
+        local _crateHdg = mist.getHeading(_nearestCrate.crateUnit, true)
+
+        -- destroy crates
+        for _, _crate in pairs(_nearbyMultiCrates) do
+            if _point == nil then
+                _point = _crate.crateUnit:getPoint()
+            end
+
+            if _heli:getCoalition() == 1 then
+                ctld.spawnedCratesRED[_crate.crateUnit:getName()] = nil
+            else
+                ctld.spawnedCratesBLUE[_crate.crateUnit:getName()] = nil
+            end
+
+            --destroy
+            _crate.crateUnit:destroy()
+        end
+
+        local _spawnedGroup = ctld.spawnCrateGroup(_heli, { _point }, { _nearestCrate.details.unit }, { _crateHdg })
+        if _spawnedGroup == nil then
+            ctld.logError("ctld.unpackAirdropMultiCrate group was not spawned - skipping setGrpROE")
+        else
+            timer.scheduleFunction(ctld.autoUpdateRepackMenu, { reschedule = false }, timer.getTime() + 1)
+            ctld.setGrpROE(_spawnedGroup)
+            ctld.processCallback({ unit = _heli, crate = _nearestCrate, spawnedGroup = _spawnedGroup, action = "unpack" })
+            trigger.action.outTextForCoalition(_heli:getCoalition(),
+                ctld.i18n_translate("%1 successfully deployed %2 to the field using %3 airdrop crates.",
+                    ctld.getPlayerNameOrType(_heli), _nearestCrate.details.desc, #_nearbyMultiCrates), 10)
+        end
+    else
+        local _txt = ctld.i18n_translate(
+        "Cannot build %1!\n\nIt requires %2 airdrop crates and there are %3 \n\nOr the crates are not within %4 of each other",
+            _nearestCrate.details.desc, _nearestCrate.details.cratesRequired, #_nearbyMultiCrates, ctld.maxDistanceBetweenCratesForBuilding)
 
         ctld.displayMessageToGroup(_heli, _txt, 20)
     end
@@ -5612,11 +6153,12 @@ end
 
 -- are we near friendly logistics zone
 function ctld.inLogisticsZone(_heli)
-    --ctld.logDebug("ctld.inLogisticsZone(), _heli = %s", ctld.p(_heli))
+    ctld.logDebug("ctld.inLogisticsZone(), _heli = %s", ctld.p(_heli))
 
     if ctld.inAir(_heli) then
         return false
     end
+    
     local _heliPoint = _heli:getPoint()
     ctld.logDebug("_heliPoint = %s", ctld.p(_heliPoint))
     for _, _name in pairs(ctld.logisticUnits) do
@@ -5892,13 +6434,14 @@ function ctld.addTransportF10MenuOptions(_unitName)
     ctld.logDebug("ctld.addTransportF10MenuOptions(_unitName=[%s])", ctld.p(_unitName))
     local _unit = ctld.getTransportUnit(_unitName)
     ctld.logTrace("_unit = %s", ctld.p(_unit))
-
     if _unit then
         local _unitTypename = _unit:getTypeName()
         local _groupId = ctld.getGroupId(_unit)
+        ctld.logTrace("_unitTypename = %s", ctld.p(_unitTypename))
+        ctld.logTrace("_unit:getName() = %s", ctld.p(_groupId))
         if _groupId then
-            -- ctld.logTrace("_groupId = %s", ctld.p(_groupId))
-            -- ctld.logTrace("ctld.addedTo = %s", ctld.p(ctld.addedTo[tostring(_groupId)]))
+            ctld.logTrace("_groupId = %s", ctld.p(_groupId))
+            ctld.logTrace("ctld.addedTo = %s", ctld.p(ctld.addedTo[tostring(_groupId)]))
             if ctld.addedTo[tostring(_groupId)] == nil then
                 ctld.logTrace("adding CTLD menu for _groupId = %s", ctld.p(_groupId))
                 local _rootPath = missionCommands.addSubMenuForGroup(_groupId, ctld.i18n_translate("CTLD"))
@@ -6038,6 +6581,8 @@ function ctld.addTransportF10MenuOptions(_unitName)
 
                     missionCommands.addCommandForGroup(_groupId, ctld.i18n_translate("Unpack Any Crate"),
                         _crateCommands, ctld.unpackCrates, { _unitName })
+                    missionCommands.addCommandForGroup(_groupId, ctld.i18n_translate("Unpack AIRDROP"),
+                        _crateCommands, ctld.unpackC130Airdrop, { _unitName })
                     missionCommands.addCommandForGroup(_groupId, ctld.i18n_translate("List Nearby Crates"),
                         _crateCommands, ctld.listNearbyCrates, { _unitName })
 
@@ -6448,6 +6993,28 @@ function ctld.getGroupId(_unit)
     local _unitDB = mist.DBs.unitsById[tonumber(_unit:getID())]
     if _unitDB ~= nil and _unitDB.groupId then
         return _unitDB.groupId
+    end
+
+    -- Check humansByName database for dynamically spawned units
+    local _humanDB = mist.DBs.humansByName[_unit:getName()]
+    if _humanDB ~= nil and _humanDB.groupId then
+        return _humanDB.groupId
+    end
+
+    -- Fallback: get group ID directly from the unit's group
+    local _group = Unit.getGroup(_unit)
+    if _group then
+        local _groupName = _group:getName()
+        local _groupDB = mist.DBs.groupsByName[_groupName]
+        if _groupDB and _groupDB.groupId then
+            return _groupDB.groupId
+        end
+        
+        -- Final fallback: try to get from group ID directly
+        local _groupId = tonumber(_group:getID())
+        if _groupId then
+            return _groupId
+        end
     end
 
     return nil
@@ -8586,6 +9153,7 @@ function ctld.eventHandler:onEvent(event)
 
     if not mist.DBs.humansByName[unitName] then
         -- give a few milliseconds for MiST to handle the BIRTH event too
+        ctld.logTrace("NOT IN MIST humansByName yet - scheduling a timer to call processHumanPlayer() for - ".. unitName);
         ctld.logTrace("give MiST some time to handle the BIRTH event too")
         timer.scheduleFunction(function()
             ctld.logTrace("calling the 'processHumanPlayer' function in a timer")
@@ -8710,5 +9278,6 @@ env.setErrorMessageBoxEnabled(false)
 if ctld.dontInitialize then
     ctld.logInfo(string.format("Skipping initializion of version %s because ctld.dontInitialize is true", ctld.Version))
 else
+    ctld.logInfo(string.format("CTLD - Initializing version %s", ctld.Version))
     ctld.initialize()
 end

@@ -1488,20 +1488,57 @@ do -- the main scope
 					log:error('groupSpawned event handler: cannot get hold of Group via Unit. This is a DCS bug')
 					return
 				end
-				if event.initiator:getPlayerName() == "" then
-					log:error('groupSpawned event handler: cannot get initiator playerName. This is a DCS bug')
-					return
+				
+				-- Safely check for player name - dynamically spawned units might not have getPlayerName() available
+				local success, pName = pcall(function() return event.initiator:getPlayerName() end)
+				local isDynamicUnit = not mist.DBs.MEunitsByName[event.initiator:getName()]
+				
+				-- For units that exist in ME tables, require a valid player name
+				if not isDynamicUnit then
+					if not success or not pName or pName == "" then
+						log:error('groupSpawned event handler: cannot get initiator playerName. This is a DCS bug')
+						return
+					end
+				else
+					-- For dynamically spawned units, we still want to process them even without player name
+					log:info('Processing dynamically spawned unit: $1', event.initiator:getName())
 				end
-				if not mist.DBs.MEunitsByName[event.initiator:getName()] then
-					log:error('groupSpawned event handler: cannot find initiator unit in MiST tables. This is a DCS bug')
-					return
-				end
+				
 				--	log:info(Unit.getGroup(event.initiator):getName())
 				local gName = g:getName()
 				if not tempSpawnedGroups[gName] then
 					--log:warn('addedTo tempSpawnedGroups: $1', gName)
 					tempSpawnedGroups[gName] = {type = 'group', gp = g}
 					tempSpawnGroupsCounter = tempSpawnGroupsCounter + 1
+				end
+				
+				-- Update humansByName database for dynamically spawned units
+				if isDynamicUnit then
+					local unitName = event.initiator:getName()
+					if not mist.DBs.humansByName[unitName] then
+						-- Get group ID for the dynamically spawned unit
+						local groupId = tonumber(g:getID())
+						
+						-- Create basic unit data for dynamically spawned unit
+						local unitData = {
+							unitName = unitName,
+							unitId = tonumber(event.initiator:getID()),
+							type = event.initiator:getTypeName(),
+							groupName = gName,
+							groupId = groupId,
+							playerName = success and pName or nil,
+							position = event.initiator:getPosition().p,
+							heading = mist.getHeading(event.initiator, true)
+						}
+						mist.DBs.humansByName[unitName] = unitData
+						
+						-- Also add to unitsById for consistency
+						if not mist.DBs.unitsById[unitData.unitId] then
+							mist.DBs.unitsById[unitData.unitId] = unitData
+						end
+						
+						log:info("Added dynamically spawned unit to humansByName: $1", unitName)
+					end
 				end
 			elseif Object.getCategory(event.initiator) == 3 or Object.getCategory(event.initiator) == 6 then
 				--log:info('staticSpawnEvent')
