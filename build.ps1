@@ -23,11 +23,11 @@
         the order of files. It then concatenates the content of these individual Lua files
         (which are expected to already contain their respective start and end delimiters,
         and '_header.lua' if it exists) into a single, combined Lua file. The output file
-        will be named based on the original input file (e.g., 'original_file_rebuilt.lua').
+        will be named based on the original input file (e.g., 'original_file_compiled.lua').
 
 .PARAMETER InputFilePath
     In splitting mode, the full path to the large Lua file that needs to be split.
-    In building mode, this is used to derive the name of the rebuilt output file.
+    In building mode, this is used to derive the name of the compiled output file.
     If only a filename is provided, the script will look for it in the current directory.
     If not provided, the script will prompt the user to enter the filename (assumed to be in the current directory).
 
@@ -60,7 +60,7 @@
     # Example 5: Build a combined file from previously split files
     # Assumes 'CTLD.lua' was the original input file for splitting,
     # and the split files are in 'import'.
-    # The output will be 'CTLD_rebuilt.lua' in the script's directory.
+    # The output will be 'CTLD_compiled.lua' in the script's directory.
     .\build.ps1 -InputFilePath "CTLD.lua" -Build
 
     # Example 6: Build a combined file from previously split files in a custom directory
@@ -101,7 +101,7 @@ $ScriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
 if ([string]::IsNullOrEmpty($InputFilePath)) {
     $promptMessage = "Please enter the name of the large Lua file (e.g., pretense_compiled.lua). It will be looked for in the current directory."
     if ($Build) {
-        $promptMessage = "Please enter the original name of the large Lua file that was split (e.g., pretense_compiled.lua). This is used for naming the rebuilt file."
+        $promptMessage = "Please enter the original name of the large Lua file that was split (e.g., pretense_compiled.lua). This is used for naming the compiled file."
     }
     $fileNameOnly = Read-Host $promptMessage
     # Construct the full path using the script's directory and the provided filename
@@ -175,9 +175,9 @@ if ($Build) {
         exit 1
     }
 
-    # Determine the name for the rebuilt file
+    # Determine the name for the compiled file
     $originalFileNameWithoutExtension = [System.IO.Path]::GetFileNameWithoutExtension($InputFilePath)
-    $rebuiltFileName = "${originalFileNameWithoutExtension}_rebuilt.lua"
+    $rebuiltFileName = "${originalFileNameWithoutExtension}_compiled.lua"
     $rebuiltFilePath = Join-Path $ScriptDirectory $rebuiltFileName
 
     $combinedContent = [System.Collections.ArrayList]::new()
