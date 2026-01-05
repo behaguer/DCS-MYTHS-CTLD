@@ -7,7 +7,6 @@ transport_config.lua
 unit_config.lua
 infantry_config.lua
 spawn_config.lua
-jtac_config.lua
 ME_functions.lua
 utility_functions.lua
 radio_functions.lua

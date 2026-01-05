@@ -491,7 +491,6 @@ ctld.AASystemCrateStacking = false
 -----------------[[ END OF config.lua ]]-----------------
 -----------------[[ jtac_config.lua ]]-----------------
 
--- ***************** JTAC CONFIGURATION *****************
 ctld.JTAC_LIMIT_RED = 10             -- max number of JTAC Crates for the RED Side
 ctld.JTAC_LIMIT_BLUE = 10            -- max number of JTAC Crates for the BLUE Side
 ctld.JTAC_dropEnabled = true         -- allow JTAC Crate spawn from F10 menu
@@ -512,6 +511,14 @@ ctld.JTAC_allowStandbyMode = true    -- if true, allow players to toggle lasing 
 ctld.JTAC_laseSpotCorrections = true -- if true, each JTAC will have a special option (toggle on/off) available in it's menu to attempt to lead the target, taking into account current wind conditions and the speed of the target (particularily useful against moving heavy armor)
 ctld.JTAC_allowSmokeRequest = true   -- if true, allow players to request a smoke on target (temporary)
 ctld.JTAC_allow9Line = true          -- if true, allow players to ask for a 9Line (individual) for a specific JTAC's target
+
+-- if the unit is on this list, it will be made into a JTAC when deployed
+ctld.jtacUnitTypes     = {
+    "SKP", "Hummer",            -- there are some wierd encoding issues so if you write SKP-11 it wont match as the - sign is encoded differently...
+    "MQ", "RQ"                  --"MQ-9 Repear", "RQ-1A Predator"}
+}
+ctld.jtacDroneRadius   = 1000   -- JTAC offset radius in meters for orbiting drones
+ctld.jtacDroneAltitude = 7000   -- JTAC altitude in meters for orbiting drones
 
 -----------------[[ END OF jtac_config.lua ]]-----------------
 -----------------[[ zones_config.lua ]]-----------------
@@ -1268,17 +1275,6 @@ ctld.spawnableCratesModels = {
         ["type"] = "trunks_small_cargo",
 ]] --
 -----------------[[ END OF spawn_config.lua ]]-----------------
------------------[[ jtac_config.lua ]]-----------------
-
--- if the unit is on this list, it will be made into a JTAC when deployed
-ctld.jtacUnitTypes     = {
-    "SKP", "Hummer",            -- there are some wierd encoding issues so if you write SKP-11 it wont match as the - sign is encoded differently...
-    "MQ", "RQ"                  --"MQ-9 Repear", "RQ-1A Predator"}
-}
-ctld.jtacDroneRadius   = 1000   -- JTAC offset radius in meters for orbiting drones
-ctld.jtacDroneAltitude = 7000   -- JTAC altitude in meters for orbiting drones
-
------------------[[ END OF jtac_config.lua ]]-----------------
 -----------------[[ ME_functions.lua ]]-----------------
 
 -- ***************************************************************
