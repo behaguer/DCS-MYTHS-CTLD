@@ -4,22 +4,20 @@
 
 --========    ENGLISH - the reference ===========================================================================
 ctld.i18n_lang = "en"
---========    FRENCH - FRANCAIS =================================================================================
---ctld.i18n_lang = "fr"
---======    SPANISH : ESPAÃ‘OL ====================================================================================
---ctld.i18n_lang = "es"
---======    Korean : í•œêµ­ì–´ ====================================================================================
---ctld.i18n_lang = "ko"
+--ctld.i18n_lang = "fr" -- FRENCH - FRANCAIS
+--ctld.i18n_lang = "es" -- SPANISH : ESPAÑOL
+--ctld.i18n_lang = "ko" -- KOREAN : 한국어
 
 if not ctld.i18n then  -- should be defined first by CTLD-i18n.lua, but just in case it's an old mission, let's keep it here
     ctld.i18n = {}     -- DONT REMOVE!
 end
 
--- This is the default language
+-- English is the default language
 -- If a string is not found in the current language then it will default to this language
--- Note that no translation is provided for this language (obviously) but that we'll maintain this table to help the translators.
+-- PLEASE NOTE: That no translation is provided for this language (obviously) but that we'll maintain this table to help the translators.
 ctld.i18n["en"] = {}
 ctld.i18n["en"].translation_version = "1.6"            -- make sure that all the translations are compatible with this version of the english language texts
+
 local lang = "en"; env.info(string.format("I - CTLD.i18n_translate: Loading %s language version %s", lang,
     tostring(ctld.i18n[lang].translation_version)))
 
@@ -180,8 +178,7 @@ ctld.i18n["en"]["1 FOB Crate oboard (%1 kg)\n"] = ""
 ctld.i18n["en"]["%1 crate onboard (%2 kg)\n"] = ""
 ctld.i18n["en"]["Total weight of cargo : %1 kg\n"] = ""
 ctld.i18n["en"]["No cargo."] = ""
-ctld.i18n["en"]["Hovering above %1 crate. \n\nHold hover for %2 seconds! \n\nIf the countdown stops you're too far away!"] =
-""
+ctld.i18n["en"]["Hovering above %1 crate. \n\nHold hover for %2 seconds! \n\nIf the countdown stops you're too far away!"] =""
 ctld.i18n["en"]["Loaded %1 crate!"] = ""
 ctld.i18n["en"]["Too low to hook %1 crate.\n\nHold hover for %2 seconds"] = ""
 ctld.i18n["en"]["Too high to hook %1 crate.\n\nHold hover for %2 seconds"] = ""
@@ -202,16 +199,11 @@ ctld.i18n["en"]["%1 successfully deployed %2 to the field"] = ""
 ctld.i18n["en"]["No friendly crates close enough to unpack, or crate too close to aircraft."] = ""
 ctld.i18n["en"]["Finished building FOB! Crates and Troops can now be picked up."] = ""
 ctld.i18n["en"]["Finished building FOB! Crates can now be picked up."] = ""
-ctld.i18n["en"]["%1 started building FOB using %2 FOB crates, it will be finished in %3 seconds.\nPosition marked with smoke."] =
-""
-ctld.i18n["en"]["Cannot build FOB!\n\nIt requires %1 Large FOB crates ( 3 small FOB crates equal 1 large FOB Crate) and there are the equivalent of %2 large FOB crates nearby\n\nOr the crates are not within 750m of each other"] =
-""
-ctld.i18n["en"]["You are not currently transporting any crates. \n\nTo Pickup a crate, hover for %1 seconds above the crate or land and use F10 Crate Commands."] =
-""
-ctld.i18n["en"]["You are not currently transporting any crates. \n\nTo Pickup a crate, hover for %1 seconds above the crate."] =
-""
-ctld.i18n["en"]["You are not currently transporting any crates. \n\nTo Pickup a crate, land and use F10 Crate Commands to load one."] =
-""
+ctld.i18n["en"]["%1 started building FOB using %2 FOB crates, it will be finished in %3 seconds.\nPosition marked with smoke."] =""
+ctld.i18n["en"]["Cannot build FOB!\n\nIt requires %1 Large FOB crates ( 3 small FOB crates equal 1 large FOB Crate) and there are the equivalent of %2 large FOB crates nearby\n\nOr the crates are not within 750m of each other"] =""
+ctld.i18n["en"]["You are not currently transporting any crates. \n\nTo Pickup a crate, hover for %1 seconds above the crate or land and use F10 Crate Commands."] = ""
+ctld.i18n["en"]["You are not currently transporting any crates. \n\nTo Pickup a crate, hover for %1 seconds above the crate."] = ""
+ctld.i18n["en"]["You are not currently transporting any crates. \n\nTo Pickup a crate, land and use F10 Crate Commands to load one."] =""
 ctld.i18n["en"]["%1 crate has been safely unhooked and is at your %2 o'clock"] = ""
 ctld.i18n["en"]["%1 crate has been safely dropped below you"] = ""
 ctld.i18n["en"]["You were too high! The crate has been destroyed"] = ""
@@ -230,8 +222,7 @@ ctld.i18n["en"]["%1 successfully deployed a full %2 in the field. \n\nAA Active 
 ctld.i18n["en"]["%1 successfully repaired a full %2 in the field."] = ""
 ctld.i18n["en"]["Cannot repair %1. No damaged %2 within 300m"] = ""
 ctld.i18n["en"]["%1 successfully deployed %2 to the field using %3 crates."] = ""
-ctld.i18n["en"]["Cannot build %1!\n\nIt requires %2 crates and there are %3 \n\nOr the crates are not close enought to each other"] =
-""
+ctld.i18n["en"]["Cannot build %1!\n\nIt requires %2 crates and there are %3 \n\nOr the crates are not close enought to each other"] =""
 ctld.i18n["en"]["%1 dropped %2 smoke."] = ""
 
 --- JTAC messages
@@ -301,6 +292,7 @@ ctld.i18n["en"]["DISABLE "] = ""
 ctld.i18n["en"]["ENABLE "] = ""
 ctld.i18n["en"]["REQUEST "] = ""
 ctld.i18n["en"]["Reset TGT Selection"] = ""
+
 -- F10 RECON menus
 ctld.i18n["en"]["RECON"] = ""
 ctld.i18n["en"]["Show targets in LOS (refresh)"] = ""
@@ -308,9 +300,9 @@ ctld.i18n["en"]["Hide targets in LOS"] = ""
 ctld.i18n["en"]["START autoRefresh targets in LOS"] = ""
 ctld.i18n["en"]["STOP autoRefresh targets in LOS"] = ""
 
---- Translates a string (text) with parameters (parameters) to the language defined in ctld.i18n_lang
----@param text string The text to translate, with the parameters as %1, %2, etc. (all strings!!!!)
----@param ... any (list) The parameters to replace in the text, in order (all paremeters will be converted to string)
+--- Translates a string with parameters to the language defined in ctld.i18n_lang
+---@param text string The text to translate, with parameters as %1, %2, etc. (all strings)
+---@param ... any The parameters to replace in the text, in order (all parameters will be converted to string)
 ---@return string the translated and formatted text
 function ctld.i18n_translate(text, ...)
     local _text
@@ -333,10 +325,12 @@ function ctld.i18n_translate(text, ...)
         _text = text
     end
 
-    if arg and arg.n and arg.n > 0 then
+    -- Modern Lua 5.1+ compatible variadic argument handling
+    local argc = select("#", ...)
+    if argc > 0 then
         local _args = {}
-        for i = 1, arg.n do
-            _args[i] = tostring(arg[i]) or ""
+        for i = 1, argc do
+            _args[i] = tostring(select(i, ...)) or ""
         end
         for i = 1, #_args do
             _text = string.gsub(_text, "%%" .. i, _args[i])
