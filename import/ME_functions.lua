@@ -398,7 +398,7 @@ function ctld.activatePickupZone(_zoneName)
                 return
             end
 
-            _zoneDetails[4] = 1                              --activate zone
+            _zoneDetails[4] = "1"                             --activate zone
 
             if ctld.disableAllSmoke == true then             --smoke disabled
                 return
@@ -445,7 +445,7 @@ function ctld.deactivatePickupZone(_zoneName)
     for _, _zoneDetails in pairs(ctld.pickupZones) do
         if _zoneName == _zoneDetails[1] then
             -- i'd just ignore it if its already been deactivated
-            _zoneDetails[4] = 0             --deactivate zone
+            _zoneDetails[4] = "0"            --deactivate zone
         end
     end
 end
@@ -501,9 +501,9 @@ function ctld.activateWaypointZone(_zoneName)
                 return
             end
 
-            _zoneDetails[3] = 1                              --activate zone
+            _zoneDetails[3] = "1" --activate zone
 
-            if ctld.disableAllSmoke == true then             --smoke disabled
+            if ctld.disableAllSmoke == true then -- smoke disabled
                 return
             end
 

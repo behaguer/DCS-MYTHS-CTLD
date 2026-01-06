@@ -4,38 +4,45 @@
         "version": "Lua 5.1"
     },
     "workspace": {
-        "checkThirdParty": false
+        "checkThirdParty": false,
+        "ignoreDir": [
+            "CTLD.lua",
+            "CTLD_compiled.lua"
+        ]
     },
-    "Lua.diagnostics.globals": [
-        "ctld",
-        "env",
-        "trigger",
-        "timer",
-        "land",
-        "Unit",
-        "Group",
-        "world",
-        "coalition",
-        "mist",
-        "STTS",
-        "Spot",
-        "missionCommands",
-        "Object",
-        "Airbase",
-        "StaticObject",
-        "coord",
-        "cutOff",
-        "topo",
-        "country",
-        "atmosphere",
-        "AI",
-        "Controller",
-        "x",
-        "lfs",
-        "sVal",
-        "passUnits",
-        "unitId",
-        "typeBase",
-        "dblog"
-    ]
+    "diagnostics": {
+        "globals": [
+            "ctld",
+            "env",
+            "trigger",
+            "timer",
+            "land",
+            "Unit",
+            "Group",
+            "world",
+            "coalition",
+            "mist",
+            "STTS",
+            "Spot",
+            "missionCommands",
+            "Object",
+            "Airbase",
+            "StaticObject",
+            "coord",
+            "cutOff",
+            "topo",
+            "country",
+            "atmosphere",
+            "AI",
+            "Controller",
+            "x",
+            "lfs",
+            "sVal",
+            "passUnits",
+            "unitId",
+            "typeBase",
+            "dblog"
+        ],
+        "ignoredFiles": "Disable"
+    }
 }
