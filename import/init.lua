@@ -106,7 +106,7 @@ function ctld.initialize()
         elseif _zoneColor == "blue" then
             _zone[2] = trigger.smokeColor.Blue
         else
-            _zone[2] = -1             -- no smoke colour
+            _zone[2] = "-1"             -- no smoke colour
         end
 
         -- add in counter for troops or units
@@ -116,9 +116,9 @@ function ctld.initialize()
 
         -- change active to 1 / 0
         if _zoneActive == "yes" then
-            _zone[4] = 1
+            _zone[4] = "1"
         else
-            _zone[4] = 0
+            _zone[4] = "0"
         end
     end
 
@@ -137,11 +137,11 @@ function ctld.initialize()
         elseif _zoneColor == "blue" then
             _zone[2] = trigger.smokeColor.Blue
         else
-            _zone[2] = -1             -- no smoke colour
+            _zone[2] = "-1"             -- no smoke colour
         end
 
         --mark as active for refresh smoke logic to work
-        _zone[4] = 1
+        _zone[4] = "1"
     end
 
     --sort out waypoint zones
@@ -159,15 +159,15 @@ function ctld.initialize()
         elseif _zoneColor == "blue" then
             _zone[2] = trigger.smokeColor.Blue
         else
-            _zone[2] = -1             -- no smoke colour
+            _zone[2] = "-1"            -- no smoke colour
         end
 
         --mark as active for refresh smoke logic to work
         -- change active to 1 / 0
         if _zone[3] == "yes" then
-            _zone[3] = 1
+            _zone[3] = "1"
         else
-            _zone[3] = 0
+            _zone[3] = "0"
         end
     end
 
