@@ -8,6 +8,9 @@
         "ignoreDir": [
             "CTLD.lua",
             "CTLD_compiled.lua"
+        ],
+        "library": [
+            "import/types.lua"
         ]
     },
     "diagnostics": {
