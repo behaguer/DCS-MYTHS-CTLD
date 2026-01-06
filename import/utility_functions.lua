@@ -1,6 +1,9 @@
 -----------------[[ utility_functions.lua ]]-----------------
 
 --- print an object for a debugging log
+--- @param o any object to print
+--- @param level? number depth level for recursion
+--- @return string formatted string representation of the object
 function ctld.p(o, level)
     local MAX_LEVEL = 20
     if level == nil then level = 0 end
@@ -35,6 +38,10 @@ function ctld.p(o, level)
     return text
 end
 
+--- Format text for output
+--- @param text string text to format
+--- @param ... any arguments to format into the text
+--- @return string formatted text
 function ctld.formatText(text, ...)
     if not text then
         return ""
@@ -67,21 +74,33 @@ function ctld.formatText(text, ...)
     end
 end
 
+--- log an error
+--- @param message any message to log
+--- @param ... any arguments to format into the message
 function ctld.logError(message, ...)
     message = ctld.formatText(message, arg)
     env.info(" E - " .. ctld.Id .. message)
 end
 
+--- log a warning
+--- @param message any message to log
+--- @param ... any arguments to format into the message
 function ctld.logWarning(message, ...)
     message = ctld.formatText(message, arg)
     env.info(" W - " .. ctld.Id .. message)
 end
 
+--- log an info
+--- @param message any message to log
+--- @param ... any arguments to format into the message
 function ctld.logInfo(message, ...)
     message = ctld.formatText(message, arg)
     env.info(" I - " .. ctld.Id .. message)
 end
 
+--- log an debug mesage
+--- @param message any message to log
+--- @param ... any arguments to format into the message
 function ctld.logDebug(message, ...)
     if message and ctld.Debug then
         message = ctld.formatText(message, arg)
@@ -89,6 +108,9 @@ function ctld.logDebug(message, ...)
     end
 end
 
+--- log a trace mesage
+--- @param message any message to log
+--- @param ... any arguments to format into the message
 function ctld.logTrace(message, ...)
     if message and ctld.Trace then
         message = ctld.formatText(message, arg)
@@ -96,21 +118,23 @@ function ctld.logTrace(message, ...)
     end
 end
 
+--- Next Unit ID generator
 ctld.nextUnitId = 1;
 ctld.getNextUnitId = function()
     ctld.nextUnitId = ctld.nextUnitId + 1
-
     return ctld.nextUnitId
 end
 
+--- Next Group ID generator
 ctld.nextGroupId = 1;
-
 ctld.getNextGroupId = function()
     ctld.nextGroupId = ctld.nextGroupId + 1
-
     return ctld.nextGroupId
 end
 
+--- Get transport unit by name if active and alive
+--- @param _unitName string name of the transport unit
+--- @return Unit|nil transport unit object if active and alive, otherwise nil
 function ctld.getTransportUnit(_unitName)
     if _unitName == nil then
         return nil
@@ -124,6 +148,16 @@ function ctld.getTransportUnit(_unitName)
     return nil
 end
 
+--- Spawn a static crate
+--- @param _country number country ID
+--- @param _unitId number unit ID
+--- @param _point table point table with x and z coordinates
+--- @param _name string name of the crate
+--- @param _weight number weight of the crate
+--- @param _side number coalition side
+--- @param _hdg number heading of the crate
+--- @param _model_type string|nil model type of the crate
+--- @return StaticObject spawned crate object
 function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side, _hdg, _model_type)
     local _crate
     local _spawnedCrate
@@ -190,6 +224,12 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
     return _spawnedCrate
 end
 
+--- Spawn a static FOB crate
+--- @param _country number country ID
+--- @param _unitId number unit ID
+--- @param _point table point table with x and z coordinates
+--- @param _name string name of the crate
+--- @return StaticObject spawned FOB crate object
 function ctld.spawnFOBCrateStatic(_country, _unitId, _point, _name)
     local _crate = {
         ["category"] = "Fortifications",
@@ -212,7 +252,12 @@ function ctld.spawnFOBCrateStatic(_country, _unitId, _point, _name)
 
     return _spawnedCrate
 end
-
+--- Spawn a FOB 
+--- @param _country number country ID
+--- @param _unitId number unit ID
+--- @param _point table point table with x and z coordinates
+--- @param _name string name of the crate
+--- @return StaticObject spawned FOB crate object
 function ctld.spawnFOB(_country, _unitId, _point, _name)
     local _crate = {
         ["category"] = "Fortifications",
@@ -250,6 +295,9 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
     return _spawnedCrate
 end
 
+--- Spawn a crate
+--- @param _arguments table arguments table
+--- @param bypassCrateWaitTime boolean|nil bypass crate wait time check
 function ctld.spawnCrate(_arguments, bypassCrateWaitTime)
     local _status, _err = pcall(function(_args)
         -- use the cargo weight to guess the type of unit as no way to add description :(
@@ -311,8 +359,6 @@ function ctld.spawnCrate(_arguments, bypassCrateWaitTime)
                 ctld.crateWait[_heli:getPlayerName()] = timer.getTime() + ctld.crateWaitTime
             end
 
-            local _heli = ctld.getTransportUnit(_args[1])
-
             local _model_type = nil
 
             local _point = ctld.getPointAt12Oclock(_heli, 15)
@@ -359,14 +405,24 @@ end
 
 ctld.randomCrateSpacing = 15 -- meters
 
+--- Get point at 12 o'clock from unit
+--- @param _unit Unit transport unit
+--- @param _offset number|nil offset distance in meters
 function ctld.getPointAt12Oclock(_unit, _offset)
     return ctld.getPointAtDirection(_unit, _offset, 0)
 end
 
+--- Get point at 6 o'clock from unit
+--- @param _unit Unit transport unit
+--- @param _offset number|nil offset distance in meters
 function ctld.getPointAt6Oclock(_unit, _offset)
     return ctld.getPointAtDirection(_unit, _offset, math.pi)
 end
 
+--- Get point in front sector from unit
+--- @param _unit Unit transport unit
+--- @param _offset number|nil offset distance in meters
+--- @return table|nil point table with x, y, z coordinates
 function ctld.getPointInFrontSector(_unit, _offset)
     if _unit then
         local playerHeading = mist.getHeading(_unit)
@@ -376,8 +432,14 @@ function ctld.getPointInFrontSector(_unit, _offset)
         end
         return ctld.getPointAtDirection(_unit, _offset, randomHeading)
     end
+    ctld.logTrace("No unit supplied in getPointInFrontSector call = %s", ctld.p(_unit))
+    return nil
 end
 
+--- get point in rear sector from unit
+--- @param _unit Unit transport unit
+--- @param _offset number|nil offset distance in meters
+--- @return table|nil point table with x, y, z coordinates
 function  ctld.getPointInRearSector(_unit, _offset)
     if _unit then
         local playerHeading = mist.getHeading(_unit)
@@ -387,8 +449,15 @@ function  ctld.getPointInRearSector(_unit, _offset)
         end
         return ctld.getPointAtDirection(_unit, _offset, randomHeading)
     end
+    ctld.logTrace("No unit supplied in getPointInRearSector call = %s", ctld.p(_unit))
+    return nil 
 end
 
+--- Get point at direction from unit
+--- @param _unit Unit transport unit
+--- @param _offset number|nil offset distance in meters
+--- @param _directionInRadian number direction in radians
+--- @return table point table with x, y, z coordinates
 function ctld.getPointAtDirection(_unit, _offset, _directionInRadian)
     if _offset == nil then
         _offset = ctld.getSecureDistanceFromUnit(_unit:getName())
@@ -399,14 +468,19 @@ function ctld.getPointAtDirection(_unit, _offset, _directionInRadian)
     --ctld.logTrace("_randomOffsetX = %s", ctld.p(_randomOffsetX))
     --ctld.logTrace("_randomOffsetZ = %s", ctld.p(_randomOffsetZ))
     local _position = _unit:getPosition()
-    local _angle    = math.atan(_position.x.z, _position.x.x) + _directionInRadian
+    local _angle    = math.atan2(_position.x.z, _position.x.x) + _directionInRadian
     local _xOffset  = math.cos(_angle) * (_offset + _randomOffsetX)
     local _zOffset  = math.sin(_angle) * (_offset + _randomOffsetZ)
     local _point    = _unit:getPoint()
     return { x = _point.x + _xOffset, z = _point.z + _zOffset, y = _point.y }
 end
 
-function ctld.getRelativePoint(_refPointXZTable, _distance, _angle_radians)  -- return coord point at distance and angle from _refPointXZTable
+--- Get relative point from reference point -- return coord point at distance and angle from _refPointXZTable
+--- @param _refPointXZTable table reference point with x, y, z coordinates
+--- @param _distance number distance from reference point
+--- @param _angle_radians number angle in radians from reference point
+--- @return table relative point with x, y, z coordinates
+function ctld.getRelativePoint(_refPointXZTable, _distance, _angle_radians)  
     local relativePoint = {}
     relativePoint.x = _refPointXZTable.x + _distance * math.cos(_angle_radians)
     if _refPointXZTable.z == nil then
@@ -417,6 +491,10 @@ function ctld.getRelativePoint(_refPointXZTable, _distance, _angle_radians)  -- 
     return relativePoint
 end
 
+--- Check if troops or vehicles are onboard a helicopter
+--- @param _heli Unit transport unit
+--- @param _troops boolean true to check for troops, false to check for vehicles
+--- @return boolean true if troops/vehicles are onboard, false otherwise
 function ctld.troopsOnboard(_heli, _troops)
     if ctld.inTransitTroops[_heli:getName()] ~= nil then
         local _onboard = ctld.inTransitTroops[_heli:getName()]
@@ -439,7 +517,9 @@ function ctld.troopsOnboard(_heli, _troops)
     end
 end
 
--- if its dropped by AI then there is no player name so return the type of unit
+--- Get player name or type if dropped by AI (no player name)
+--- @param _heli Unit transport unit
+--- @return string player name or unit type
 function ctld.getPlayerNameOrType(_heli)
     if _heli:getPlayerName() == nil then
         return _heli:getTypeName()
@@ -448,6 +528,9 @@ function ctld.getPlayerNameOrType(_heli)
     end
 end
 
+--- Check if helicopter is in an extract zone
+--- @param _heli Unit transport unit
+--- @return table|boolean extract zone details table if in extract zone, false otherwise
 function ctld.inExtractZone(_heli)
     local _heliPoint = _heli:getPoint()
 
@@ -463,7 +546,9 @@ function ctld.inExtractZone(_heli)
     return false
 end
 
--- safe to fast rope if speed is less than 0.5 Meters per second
+--- safe to fast rope if speed is less than 0.5 Meters per second
+--- @param _heli Unit transport unit
+--- @return boolean true if safe to fast rope, false otherwise
 function ctld.safeToFastRope(_heli)
     if ctld.enableFastRopeInsertion == false then
         return false
@@ -475,12 +560,18 @@ function ctld.safeToFastRope(_heli)
     end
 end
 
+--- Convert meters to feet
+--- @param _meters number value in meters
+--- @return number value in feet
 function ctld.metersToFeet(_meters)
     local _feet = _meters * 3.2808399
 
     return mist.utils.round(_feet)
 end
 
+--- Check if unit is in air
+--- @param _heli Unit transport unit
+--- @return boolean true if unit is in air, false otherwise
 function ctld.inAir(_heli)
     if _heli:inAir() == false then
         return false
@@ -494,6 +585,10 @@ function ctld.inAir(_heli)
     return true
 end
 
+
+--- Deploy troops or vehicles from helicopter
+--- @param _heli Unit transport unit
+--- @param _troops boolean true to deploy troops, false to deploy vehicles
 function ctld.deployTroops(_heli, _troops)
     local _onboard = ctld.inTransitTroops[_heli:getName()]
 
@@ -533,7 +628,14 @@ function ctld.deployTroops(_heli, _troops)
 
                     ctld.processCallback({ unit = _heli, unloaded = _droppedTroops, action = "dropped_troops" })
                 else
-                    --extract zone!
+                    -- in extract zone!
+
+                    -- do a nil check here for _extractZone.flag in case the zone was created without a flag
+                    if not _extractZone or not _extractZone.flag then
+                        ctld.logError("This extract zone is not configured correctly! Missing flag configuration.")
+                        return
+                    end
+
                     local _droppedCount = trigger.misc.getUserFlag(_extractZone.flag)
 
                     _droppedCount = (#_onboard.troops.units) + _droppedCount
@@ -543,14 +645,15 @@ function ctld.deployTroops(_heli, _troops)
                     ctld.inTransitTroops[_heli:getName()].troops = nil
                     ctld.adaptWeightToCargo(_heli:getName())
 
+                    local zoneName = (_extractZone and _extractZone.name) or "Unknown Zone"
                     if ctld.inAir(_heli) then
                         trigger.action.outTextForCoalition(_heli:getCoalition(),
                             ctld.i18n_translate("%1 fast-ropped troops from %2 into %3", ctld.getPlayerNameOrType(_heli),
-                                _heli:getTypeName(), _extractZone.name), 10)
+                                _heli:getTypeName(), zoneName), 10)
                     else
                         trigger.action.outTextForCoalition(_heli:getCoalition(),
                             ctld.i18n_translate("%1 dropped troops from %2 into %3", ctld.getPlayerNameOrType(_heli),
-                                _heli:getTypeName(), _extractZone.name), 10)
+                                _heli:getTypeName(), zoneName), 10)
                     end
                 end
             else
@@ -583,6 +686,12 @@ function ctld.deployTroops(_heli, _troops)
     end
 end
 
+--- Insert troop types into troop array
+--- @param _troopType string troop unit type
+--- @param _count number number of troops to insert
+--- @param _troopArray table troop array to insert into
+--- @param _troopName string|nil troop name to use instead of type
+--- @return table updated troop array
 function ctld.insertIntoTroopsArray(_troopType, _count, _troopArray, _troopName)
     for _i = 1, _count do
         local _unitId = ctld.getNextUnitId()
@@ -594,6 +703,11 @@ function ctld.insertIntoTroopsArray(_troopType, _count, _troopArray, _troopName)
     return _troopArray
 end
 
+--- Generate troop types for transport
+--- @param _side number coalition side
+--- @param _countOrTemplate number|table number of troops or template table
+--- @param _country number country ID
+--- @return table troop details table
 function ctld.generateTroopTypes(_side, _countOrTemplate, _country)
     local _troops = {}
     local _weight = 0
@@ -706,14 +820,15 @@ function ctld.generateTroopTypes(_side, _countOrTemplate, _country)
     return _details
 end
 
---Special F10 function for players for troops
+--- Special F10 function for players for troops
+--- @param _args table arguments table
+--- @return boolean true if troops extracted or unloaded, false otherwise
 function ctld.unloadExtractTroops(_args)
     local _heli = ctld.getTransportUnit(_args[1])
 
     if _heli == nil then
         return false
     end
-
 
     local _extract = nil
     if not ctld.inAir(_heli) then
@@ -732,7 +847,10 @@ function ctld.unloadExtractTroops(_args)
     end
 end
 
--- load troops onto vehicle
+--- load troops onto vehicle
+--- @param _heli Unit transport unit
+--- @param _troops boolean true to load troops, false to load vehicles
+--- @param _numberOrTemplate number|table number of troops or template table
 function ctld.loadTroops(_heli, _troops, _numberOrTemplate)
     -- load troops + vehicles if c130 or herc
     -- "M1045 HMMWV TOW"
@@ -777,6 +895,10 @@ function ctld.loadTroops(_heli, _troops, _numberOrTemplate)
     ctld.adaptWeightToCargo(_heli:getName())
 end
 
+--- Generate vehicle types for transport
+--- @param _side number coalition side
+--- @param _country number country ID
+--- @return table vehicle details table
 function ctld.generateVehiclesForTransport(_side, _country)
     local _vehicles = {}
     local _list
@@ -802,6 +924,8 @@ function ctld.generateVehiclesForTransport(_side, _country)
     return _details
 end
 
+--- Load or unload FOB crate from helicopter
+--- @param _args table arguments table
 function ctld.loadUnloadFOBCrate(_args)
     local _heli = ctld.getTransportUnit(_args[1])
     local _troops = _args[2]
@@ -900,7 +1024,11 @@ function ctld.loadUnloadFOBCrate(_args)
     end
 end
 
-function ctld.updateTroopsInGame(params, t)		-- return count of troops in game by Coalition
+--- Return count of troops in game by Coalition
+--- @param params table scheduler params
+--- @param t number current time
+--- @return number reschedule time in seconds
+function ctld.updateTroopsInGame(params, t)
  	if t == nil then t = timer.getTime() + 1; end
     ctld.InfantryInGameCount  = {0, 0}
     for coalitionId=1, 2 do				-- for each CoaId
@@ -915,6 +1043,9 @@ function ctld.updateTroopsInGame(params, t)		-- return count of troops in game b
     return 5		-- reschedule each 5"
 end
 
+--- Load troops onto helicopter from zone or extract nearby troops
+--- @param _args table arguments table
+--- @return boolean true if troops loaded, false otherwise
 function ctld.loadTroopsFromZone(_args)
     local _heli = ctld.getTransportUnit(_args[1])
     local _troops = _args[2]
@@ -960,18 +1091,30 @@ function ctld.loadTroopsFromZone(_args)
         -- search for nearest troops to pickup
         return ctld.extractTroops({_heli:getName(), _troops})
     elseif _zone.inZone == true then
+
         local heloCoa = _heli:getCoalition()
         ctld.logTrace("FG_ heloCoa =  %s", ctld.p(heloCoa))
         ctld.logTrace("FG_ (ctld.nbLimitSpawnedTroops[1]~=0 or ctld.nbLimitSpawnedTroops[2]~=0) =  %s", ctld.p(ctld.nbLimitSpawnedTroops[1]~=0 or ctld.nbLimitSpawnedTroops[2]~=0))
         ctld.logTrace("FG_ ctld.InfantryInGameCount[heloCoa] =  %s", ctld.p(ctld.InfantryInGameCount[heloCoa]))
-        ctld.logTrace("FG_ _groupTemplate.total =  %s", ctld.p(_groupTemplate.total))
+        
+        local groupTotal = 0
+        if _groupTemplate then
+            if type(_groupTemplate) == "table" and _groupTemplate.total and type(_groupTemplate.total) == "number" then
+                groupTotal = _groupTemplate.total
+            elseif type(_groupTemplate) == "number" then
+                groupTotal = _groupTemplate
+            end
+        end
+
+        ctld.logTrace("FG_ _groupTemplate.total =  %s", ctld.p(groupTotal))
         ctld.logTrace("FG_ ctld.nbLimitSpawnedTroops[%s].total =  %s", ctld.p(heloCoa), ctld.p(ctld.nbLimitSpawnedTroops[heloCoa]))
 
         local limitReached = true
-        if (ctld.nbLimitSpawnedTroops[1]~=0 or ctld.nbLimitSpawnedTroops[2]~=0) and (ctld.InfantryInGameCount[heloCoa] + _groupTemplate.total > ctld.nbLimitSpawnedTroops[heloCoa]) then  -- load troops only if Coa limit not reached
+        if (ctld.nbLimitSpawnedTroops[1]~=0 or ctld.nbLimitSpawnedTroops[2]~=0) and (ctld.InfantryInGameCount[heloCoa] + groupTotal > ctld.nbLimitSpawnedTroops[heloCoa]) then  -- load troops only if Coa limit not reached
             ctld.displayMessageToGroup(_heli, ctld.i18n_translate("Count Infantries limit in the mission reached, you can't load more troops"), 10)
             return false
         end
+
         if _zone.limit - 1 >= 0 then
             -- decrease zone counter by 1
             ctld.updateZoneCounter(_zone.index, -1)
@@ -992,6 +1135,9 @@ function ctld.loadTroopsFromZone(_args)
     end
 end
 
+--- unload troops from helicopter to zone or deploy nearby
+--- @param _args table arguments table
+--- @return boolean true if troops unloaded, false otherwise
 function ctld.unloadTroops(_args)
     local _heli = ctld.getTransportUnit(_args[1])
     local _troops = _args[2]
@@ -1036,6 +1182,9 @@ function ctld.unloadTroops(_args)
     end
 end
 
+--- extract troops from ground to helicopter
+--- @param _args table arguments table
+--- @return boolean true if troops extracted, false otherwise
 function ctld.extractTroops(_args)
     local _heli = ctld.getTransportUnit(_args[1])
     local _troops = _args[2]
@@ -1155,6 +1304,8 @@ function ctld.extractTroops(_args)
     return _extracted
 end
 
+--- Check troop status and display weight info
+--- @param _args table arguments table
 function ctld.checkTroopStatus(_args)
     local _unitName = _args[1]
     --list onboard troops, if c130
@@ -1170,7 +1321,7 @@ function ctld.checkTroopStatus(_args)
     end
 end
 
--- Removes troops from transport when it dies
+--- Removes troops from transport when it dies
 function ctld.checkTransportStatus()
     timer.scheduleFunction(ctld.checkTransportStatus, nil, timer.getTime() + 3)
 
@@ -1186,11 +1337,17 @@ function ctld.checkTransportStatus()
     end
 end
 
+--- Adjust internal cargo weight to match loaded cargo
+--- @param unitName string transport unit name
 function ctld.adaptWeightToCargo(unitName)
     local _weight = ctld.getWeightOfCargo(unitName)
     trigger.action.setUnitInternalCargo(unitName, _weight)
 end
 
+--- Get weight of cargo onboard transport
+--- @param unitName string transport unit name
+--- @return number weight of cargo
+--- @return string description of cargo
 function ctld.getWeightOfCargo(unitName)
     local FOB_CRATE_WEIGHT = 800
     local _weight = 0
@@ -1242,6 +1399,7 @@ function ctld.getWeightOfCargo(unitName)
     return _weight, _description
 end
 
+--- check hover status for sling load crate pickup
 function ctld.checkHoverStatus()
     timer.scheduleFunction(ctld.checkHoverStatus, nil, timer.getTime() + 1.0)
 
@@ -1329,6 +1487,8 @@ function ctld.checkHoverStatus()
     end
 end
 
+--- Load nearby crate onto helicopter
+--- @param _name string transport unit name
 function ctld.loadNearbyCrate(_name)
     local _transUnit = ctld.getTransportUnit(_name)
 
@@ -1382,11 +1542,9 @@ function ctld.loadNearbyCrate(_name)
     end
 end
 
---check each minute if the beacons' batteries have failed, and stop them accordingly
---there's no more need to actually refresh the beacons, since we set "loop" to true.
+--- Check each minute if the beacons' batteries have failed, and stop them accordingly. There's no more need to actually refresh the beacons, since we set "loop" to true.
 function ctld.refreshRadioBeacons()
     timer.scheduleFunction(ctld.refreshRadioBeacons, nil, timer.getTime() + 60)
-
 
     for _index, _beaconDetails in ipairs(ctld.deployedRadioBeacons) do
         if ctld.updateRadioBeacon(_beaconDetails) == false then
@@ -1419,6 +1577,10 @@ function ctld.refreshRadioBeacons()
     end
 end
 
+--- Set the clock direction of a crate relative to a helicopter
+--- @param _heli unit helicopter unit
+--- @param _crate unit crate unit
+--- @return number clock direction (1-12)
 function ctld.getClockDirection(_heli, _crate)
     -- Source: Helicopter Script - Thanks!
 
@@ -1450,6 +1612,10 @@ function ctld.getClockDirection(_heli, _crate)
     return _angle
 end
 
+--- Get compass bearing from reference point to unit position
+--- @param _ref table reference point {x=,y=,z=}
+--- @param _unitPos table unit position {x=,y=,z=}
+--- @return number bearing in degrees
 function ctld.getCompassBearing(_ref, _unitPos)
     _ref = mist.utils.makeVec3(_ref, 0)             -- turn it into Vec3 if it is not already.
     _unitPos = mist.utils.makeVec3(_unitPos, 0)     -- turn it into Vec3 if it is not already.
@@ -1463,6 +1629,8 @@ function ctld.getCompassBearing(_ref, _unitPos)
     return _bearing
 end
 
+--- Output nearby crates to helicopter
+--- @param _args table arguments table
 function ctld.listNearbyCrates(_args)
     local _message = ""
 
@@ -1514,6 +1682,8 @@ function ctld.listNearbyCrates(_args)
     ctld.displayMessageToGroup(_heli, _txt, 20)
 end
 
+--- Output active FOB positions to helicopter
+--- @param _args table arguments table
 function ctld.listFOBS(_args)
     local _msg = ctld.i18n_translate("FOB Positions:")
 
@@ -1537,6 +1707,9 @@ function ctld.listFOBS(_args)
     ctld.displayMessageToGroup(_heli, _msg, 20)
 end
 
+--- Get FOB position string with coordinates and radio frequencies
+--- @param _fob unit FOB unit
+--- @return string FOB position string
 function ctld.getFOBPositionString(_fob)
     local _lat, _lon = coord.LOtoLL(_fob:getPosition().p)
 
@@ -1557,6 +1730,11 @@ function ctld.getFOBPositionString(_fob)
     return _message
 end
 
+--- Display message to unit's group
+--- @param _unit unit unit to get group from
+--- @param _text string message text
+--- @param _time number display time
+--- @param _clear boolean clear previous messages
 function ctld.displayMessageToGroup(_unit, _text, _time, _clear)
     local _groupId = ctld.getGroupId(_unit)
     if _groupId then
@@ -1568,16 +1746,17 @@ function ctld.displayMessageToGroup(_unit, _text, _time, _clear)
     end
 end
 
+--- Get height difference between unit and ground
+--- @param _unit unit unit to check
+--- @return number height difference
 function ctld.heightDiff(_unit)
     local _point = _unit:getPoint()
-
-    -- env.info("heightunit " .. _point.y)
-    --env.info("heightland " .. land.getHeight({ x = _point.x, y = _point.z }))
-
     return _point.y - land.getHeight({ x = _point.x, y = _point.z })
 end
 
---includes fob crates!
+--- Get crates and their distance to helicopter
+--- @param _heli unit helicopter unit
+--- @return table list of crates with distance
 function ctld.getCratesAndDistance(_heli)
     local _crates = {}
 
@@ -1645,6 +1824,9 @@ function ctld.getCratesAndDistance(_heli)
     return _crates
 end
 
+--- Get airdrop crates and their distance to helicopter with enhanced detection for landed airdrops
+--- @param _heli unit helicopter unit
+--- @return table list of crates with distance
 function ctld.getAirdropCratesAndDistance(_heli)
     local _crates = {}
 
@@ -1732,6 +1914,11 @@ function ctld.getAirdropCratesAndDistance(_heli)
     return _crates
 end
 
+--- Get closest crate of specified type
+--- @param _heli unit helicopter unit
+--- @param _crates table list of crates with distance
+--- @param _type string crate type
+--- @return table closest crate
 function ctld.getClosestCrate(_heli, _crates, _type)
     local _closetCrate = nil
     local _shortestDistance = -1
@@ -1752,6 +1939,11 @@ function ctld.getClosestCrate(_heli, _crates, _type)
     return _closetCrate
 end
 
+--- Get closest crate on ground of specified type
+--- @param _heli unit helicopter unit
+--- @param _crates table list of crates with distance
+--- @param _type string crate type
+--- @return table closest crate
 function ctld.getClosestCrateOnGround(_heli, _crates, _type)
     local _closetCrate = nil
     local _shortestDistance = -1
@@ -1776,6 +1968,10 @@ function ctld.getClosestCrateOnGround(_heli, _crates, _type)
     return _closetCrate
 end
 
+--- Find nearest AA system of specified type to helicopter
+--- @param _heli unit helicopter unit
+--- @param _aaSystem table AA system details
+--- @return table closest AA system group and distance
 function ctld.findNearestAASystem(_heli, _aaSystem)
     local _closestHawkGroup = nil
     local _shortestDistance = -1
@@ -1809,6 +2005,9 @@ function ctld.findNearestAASystem(_heli, _aaSystem)
     return nil
 end
 
+--- Get crate static object by name
+--- @param _name string crate unit name
+--- @return unit crate static object
 function ctld.getCrateObject(_name)
     local _crate
 
@@ -1820,6 +2019,8 @@ function ctld.getCrateObject(_name)
     return _crate
 end
 
+--- Unpack crates near helicopter
+--- @param _arguments table arguments table
 function ctld.unpackCrates(_arguments)
     ctld.logTrace("FG_ ctld.unpackCrates._arguments =  %s", ctld.p(_arguments))
     local _status, _err = pcall(function(_args)
@@ -1924,6 +2125,8 @@ function ctld.unpackCrates(_arguments)
     end
 end
 
+--- Unpack airdropped crates near helicopter
+--- @param _arguments table arguments table
 function ctld.unpackC130Airdrop(_arguments)
     ctld.logTrace("FG_ ctld.unpackC130Airdrop._arguments =  %s", ctld.p(_arguments))
     local _status, _err = pcall(function(_args)
@@ -1974,7 +2177,9 @@ function ctld.unpackC130Airdrop(_arguments)
     end
 end
 
--- builds a fob!
+--- Builds a FOB from crates near helicopter
+--- @param _crates table crates near helicopter
+--- @param _heli unit helicopter unit
 function ctld.unpackFOBCrates(_crates, _heli)
     if ctld.inLogisticsZone(_heli) == true then
         ctld.displayMessageToGroup(_heli,
@@ -2081,7 +2286,8 @@ function ctld.unpackFOBCrates(_crates, _heli)
     end
 end
 
---unloads the sling crate when the helicopter is on the ground or between 4.5 - 10 meters
+--- Unloads the sling crate when the helicopter is on the ground or between 4.5 - 10 meters
+--- @param _args table arguments table
 function ctld.dropSlingCrate(_args)
     local _unitName = _args[1]
     local _heli = ctld.getTransportUnit(_unitName)
@@ -2153,9 +2359,14 @@ function ctld.dropSlingCrate(_args)
     end
 end
 
---spawns a radio beacon made up of two units,
--- one for VHF and one for UHF
--- The units are set to to NOT engage
+--- Spawns a radio beacon made up of two units, one for VHF and one for UHF. The units are set to to NOT engage.
+--- @param _point table location point
+--- @param _coalition number coalition number
+--- @param _country number country number
+--- @param _name string name of the beacon
+--- @param _batteryTime number battery time in minutes
+--- @param _isFOB boolean is this a FOB beacon
+--- @return table beacon details
 function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTime, _isFOB)
     local _freq = ctld.generateADFFrequencies()
 
@@ -2209,6 +2420,8 @@ function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTim
     return _beaconDetails
 end
 
+--- Generate unique ADF frequencies for radio beacons
+--- @return table frequencies
 function ctld.generateADFFrequencies()
     if #ctld.freeUHFFrequencies <= 3 then
         ctld.freeUHFFrequencies = ctld.usedUHFFrequencies
@@ -2240,6 +2453,12 @@ function ctld.generateADFFrequencies()
     --- return {uhf=_uhf,vhf=_vhf}
 end
 
+--- Spawns a radio beacon unit at the specified location
+--- @param _point table location point
+--- @param _country number country number
+--- @param _name string name of the beacon
+--- @param _freqsText string frequencies text
+--- @return table spawned group
 function ctld.spawnRadioBeaconUnit(_point, _country, _name, _freqsText)
     local _groupId = ctld.getNextGroupId()
 
@@ -2274,6 +2493,9 @@ function ctld.spawnRadioBeaconUnit(_point, _country, _name, _freqsText)
     return Group.getByName(mist.dynAdd(_radioGroup).name)
 end
 
+--- Update the radio beacon transmissions, stop if out of battery
+--- @param _beaconDetails table beacon details
+--- @return boolean true if still active, false if batteries dead
 function ctld.updateRadioBeacon(_beaconDetails)
     local _vhfGroup = Group.getByName(_beaconDetails.vhfGroup)
 
@@ -2345,6 +2567,8 @@ function ctld.updateRadioBeacon(_beaconDetails)
     return true
 end
 
+--- List all active radio beacons for the coalition of the helicopter
+--- @param _args table arguments table
 function ctld.listRadioBeacons(_args)
     local _heli = ctld.getTransportUnit(_args[1])
     local _message = ""
@@ -2364,6 +2588,8 @@ function ctld.listRadioBeacons(_args)
     end
 end
 
+--- Drop a radio beacon in front of the helicopter
+--- @param _args table arguments table
 function ctld.dropRadioBeacon(_args)
     local _heli = ctld.getTransportUnit(_args[1])
     local _message = ""
@@ -2390,7 +2616,8 @@ function ctld.dropRadioBeacon(_args)
     end
 end
 
---remove closet radio beacon
+--- Remove closest radio beacon
+--- @param _args table arguments table
 function ctld.removeRadioBeacon(_args)
     local _heli = ctld.getTransportUnit(_args[1])
     local _message = ""
@@ -2447,8 +2674,9 @@ function ctld.removeRadioBeacon(_args)
     end
 end
 
--- gets the center of a bunch of points!
--- return proper DCS point with height
+--- Gets the center of a bunch of points!
+--- @param _points table list of points
+--- @return table centroid point with height
 function ctld.getCentroid(_points)
     local _tx, _ty = 0, 0
     for _index, _point in ipairs(_points) do
@@ -2465,6 +2693,9 @@ function ctld.getCentroid(_points)
     return _point
 end
 
+--- Get AA system template from unit name
+--- @param _unitName string unit name
+--- @return table|nil AA system template or nil if not found
 function ctld.getAATemplate(_unitName)
     for _, _system in pairs(ctld.AASystemTemplate) do
         if _system.repair == _unitName then
@@ -2481,16 +2712,25 @@ function ctld.getAATemplate(_unitName)
     return nil
 end
 
+--- Get launcher unit name from AA system template
+--- @param _aaTemplate table AA system template
+--- @return string|nil launcher unit name or nil if not found
 function ctld.getLauncherUnitFromAATemplate(_aaTemplate)
     for _, _part in pairs(_aaTemplate.parts) do
         if _part.launcher then
             return _part.name
         end
     end
-
+    
     return nil
 end
 
+--- Rearm an existing AA system if possible
+--- @param _heli unit helicopter unit
+--- @param _nearestCrate table nearest crate
+--- @param _nearbyCrates table nearby crates
+--- @param _aaSystemTemplate table AA system template
+--- @return boolean true if rearmed, false if not
 function ctld.rearmAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTemplate)
     -- are we adding to existing aa system?
     -- check to see if the crate is a launcher
@@ -2558,6 +2798,10 @@ function ctld.rearmAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTempla
     return false
 end
 
+--- Get details of AA system from group
+--- @param _hawkGroup group AA system group
+--- @param _aaSystemTemplate table AA system template
+--- @return table AA system details
 function ctld.getAASystemDetails(_hawkGroup, _aaSystemTemplate)
     local _units = _hawkGroup:getUnits()
 
@@ -2572,6 +2816,9 @@ function ctld.getAASystemDetails(_hawkGroup, _aaSystemTemplate)
     return _hawkDetails
 end
 
+--- Count the number of entries in a table
+--- @param _table table input table
+--- @return number count of entries
 function ctld.countTableEntries(_table)
     if _table == nil then
         return 0
@@ -2587,6 +2834,11 @@ function ctld.countTableEntries(_table)
     return _count
 end
 
+--- Unpack an AA system from nearby crates
+--- @param _heli unit helicopter unit
+--- @param _nearestCrate table nearest crate
+--- @param _nearbyCrates table nearby crates
+--- @param _aaSystemTemplate table AA system template
 function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTemplate)
     ctld.logTrace("_nearestCrate = %s", ctld.p(_nearestCrate))
     ctld.logTrace("_nearbyCrates = %s", ctld.p(_nearbyCrates))
@@ -2817,7 +3069,9 @@ function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTempl
     end
 end
 
---count the number of captured cities, sets the amount of allowed AA Systems
+--- Count the number of captured cities, sets the amount of allowed AA Systems
+--- @param _heli unit helicopter unit
+--- @return number allowed AA systems
 function ctld.getAllowedAASystems(_heli)
     if _heli:getCoalition() == 1 then
         return ctld.AASystemLimitBLUE
@@ -2826,6 +3080,9 @@ function ctld.getAllowedAASystems(_heli)
     end
 end
 
+--- Count the number of complete AA systems for the coalition of the helicopter
+--- @param _heli unit helicopter unit
+--- @return number count of complete AA systems
 function ctld.countCompleteAASystems(_heli)
     local _count = 0
 
@@ -2867,17 +3124,17 @@ function ctld.countCompleteAASystems(_heli)
     return _count
 end
 
+--- Repair an existing AA system if possible
+--- @param _heli unit helicopter unit
+--- @param _nearestCrate table nearest crate
+--- @param _aaSystem table AA system template
 function ctld.repairAASystem(_heli, _nearestCrate, _aaSystem)
     -- find nearest COMPLETE AA system
     local _nearestHawk = ctld.findNearestAASystem(_heli, _aaSystem)
 
-
-
     if _nearestHawk ~= nil and _nearestHawk.dist < ctld.maxDistanceBetweenCratesForBuilding then
         local _oldHawk = ctld.completeAASystems[_nearestHawk.group:getName()]
-
         --spawn new one
-
         local _types = {}
         local _hdgs = {}
         local _points = {}
@@ -2918,6 +3175,10 @@ function ctld.repairAASystem(_heli, _nearestCrate, _aaSystem)
     end
 end
 
+--- Unpack a multi crate unit from nearby crates
+--- @param _heli unit helicopter unit
+--- @param _nearestCrate table nearest crate
+--- @param _nearbyCrates table nearby crates
 function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
     ctld.logTrace("FG_ ctld.unpackMultiCrate, _nearestCrate =  %s", ctld.p(_nearestCrate))
     -- unpack multi crate
@@ -2986,9 +3247,12 @@ function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
     end
 end
 
+--- Unpack an airdropped FOB from nearby crates
+--- @param _heli unit helicopter unit
+--- @param _nearestCrate table nearest crate
+--- @param _nearbyCrates table nearby crates
 function ctld.unpackAirdropFOB(_heli, _nearestCrate, _nearbyCrates)
     ctld.logTrace("FG_ ctld.unpackAirdropFOB, _nearestCrate =  %s", ctld.p(_nearestCrate))
-    
     if ctld.inLogisticsZone(_heli) == true then
         ctld.displayMessageToGroup(_heli,
             ctld.i18n_translate("You can't unpack that here! Take it to where it's needed!"), 20)
@@ -2997,7 +3261,6 @@ function ctld.unpackAirdropFOB(_heli, _nearestCrate, _nearbyCrates)
 
     -- Get enhanced crate detection for airdrops
     local _enhancedCrates = ctld.getAirdropCratesAndDistance(_heli)
-    
     local _nearbyMultiCrates = {}
     local _bigFobCrates = 0
     local _smallFobCrates = 0
@@ -3005,8 +3268,7 @@ function ctld.unpackAirdropFOB(_heli, _nearestCrate, _nearbyCrates)
 
     for _, _enhancedCrate in pairs(_enhancedCrates) do
         -- Check distance between this crate and the nearest crate, not distance to helicopter
-        local _distBetweenCrates = ctld.getDistance(_enhancedCrate.crateUnit:getPoint(), _nearestCrate.crateUnit:getPoint())
-        
+        local _distBetweenCrates = ctld.getDistance(_enhancedCrate.crateUnit:getPoint(), _nearestCrate.crateUnit:getPoint()) 
         if _distBetweenCrates < 750 then
             if _enhancedCrate.details.unit == "FOB-SMALL" then
                 _smallFobCrates = _smallFobCrates + 1
@@ -3102,6 +3364,11 @@ function ctld.unpackAirdropFOB(_heli, _nearestCrate, _nearbyCrates)
     end
 end
 
+--- Unpack an airdropped AA system from nearby crates
+--- @param _heli unit helicopter unit
+--- @param _nearestCrate table nearest crate
+--- @param _nearbyCrates table nearby crates
+--- @param _aaSystemTemplate table AA system template
 function ctld.unpackAirdropAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTemplate)
     ctld.logTrace("FG_ ctld.unpackAirdropAASystem, _nearestCrate = %s", ctld.p(_nearestCrate))
     ctld.logTrace("FG_ ctld.unpackAirdropAASystem, _aaSystemTemplate = %s", ctld.p(_aaSystemTemplate))
@@ -3324,6 +3591,9 @@ function ctld.unpackAirdropAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSyst
     end
 end
 
+--- Unpack a single crate unit from an airdrop
+--- @param _heli unit helicopter unit
+--- @param _crate table crate to unpack
 function ctld.unpackAirdropSingleCrate(_heli, _crate)
     ctld.logTrace("FG_ ctld.unpackAirdropSingleCrate, _crate =  %s", ctld.p(_crate))
     
@@ -3365,6 +3635,10 @@ function ctld.unpackAirdropSingleCrate(_heli, _crate)
     end
 end
 
+--- Unpack a multi crate unit from an airdrop
+--- @param _heli unit helicopter unit
+--- @param _nearestCrate table nearest crate
+--- @param _nearbyCrates table nearby crates
 function ctld.unpackAirdropMultiCrate(_heli, _nearestCrate, _nearbyCrates)
     ctld.logTrace("FG_ ctld.unpackAirdropMultiCrate, _nearestCrate =  %s", ctld.p(_nearestCrate))
     
@@ -3456,6 +3730,12 @@ function ctld.unpackAirdropMultiCrate(_heli, _nearestCrate, _nearbyCrates)
     end
 end
 
+--- Spawn a crate group at specified positions
+--- @param _heli unit helicopter unit
+--- @param _positions table list of positions to spawn units at
+--- @param _types table list of unit types to spawn
+--- @param _hdgs table list of headings for spawned units
+--- @return group spawned group
 function ctld.spawnCrateGroup(_heli, _positions, _types, _hdgs)
     -- ctld.logTrace("_heli      =  %s", ctld.p(_heli))
     -- ctld.logTrace("_positions =  %s", ctld.p(_positions))
@@ -3611,7 +3891,12 @@ function ctld.spawnCrateGroup(_heli, _positions, _types, _hdgs)
     return _spawnedGroup
 end
 
--- spawn normal group
+--- Spawn normal group dropped from helicopter
+--- @param _point table point to spawn at
+--- @param _details table group details
+--- @param _spawnBehind boolean spawn behind helicopter
+--- @param _maxSearch number maximum search distance for enemy
+--- @return group spawned group
 function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch)
     local _groupName = _details.groupName
 
@@ -3643,7 +3928,7 @@ function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch)
         local _pos = _point
 
         --try to spawn at 6 oclock to us
-        local _angle   = math.atan(_pos.z, _pos.x)
+        local _angle   = math.atan2(_pos.z, _pos.x)
         local _xOffset = math.cos(_angle) * -30
         local _yOffset = math.sin(_angle) * -30
 
@@ -3682,6 +3967,11 @@ function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch)
     return _spawnedGroup
 end
 
+--- Find nearest enemy ground unit from point
+--- @param _side number side of searching unit
+--- @param _point table point to search from
+--- @param _searchDistance number maximum search distance
+--- @return table point of nearest enemy or random point
 function ctld.findNearestEnemy(_side, _point, _searchDistance)
     local _closestEnemy = nil
 
@@ -3738,6 +4028,10 @@ function ctld.findNearestEnemy(_side, _point, _searchDistance)
     end
 end
 
+--- Find nearest group from list
+--- @param _heli unit helicopter unit
+--- @param _groups table list of group names
+--- @return table nearest group and details
 function ctld.findNearestGroup(_heli, _groups)
     local _closestGroupDetails = {}
     local _closestGroup = nil
@@ -3795,6 +4089,12 @@ function ctld.findNearestGroup(_heli, _groups)
     end
 end
 
+--- Create unit table for spawning
+--- @param _x number x position
+--- @param _y number y position
+--- @param _angle number heading angle in radians
+--- @param _details table unit details
+--- @return table unit table
 function ctld.createUnit(_x, _y, _angle, _details)
     local _newUnit = {
         ["y"] = _y,
@@ -3810,6 +4110,8 @@ function ctld.createUnit(_x, _y, _angle, _details)
     return _newUnit
 end
 
+--- Add EWR task to group
+--- @param _group group group to add task to
 function ctld.addEWRTask(_group)
     -- delayed 2 second to work around bug
     timer.scheduleFunction(function(_ewrGroup)
@@ -3829,6 +4131,9 @@ function ctld.addEWRTask(_group)
     , _group:getName(), timer.getTime() + 2)
 end
 
+--- Order group to move to point
+--- @param _leader unit leader unit of group
+--- @param _destination table destination point
 function ctld.orderGroupToMoveToPoint(_leader, _destination)
     local _group = _leader:getGroup()
 
@@ -3860,7 +4165,9 @@ function ctld.orderGroupToMoveToPoint(_leader, _destination)
     , { _group:getName(), _mission }, timer.getTime() + 2)
 end
 
--- are we in pickup zone
+--- Is helicopter in a pickup zone
+--- @param _heli unit helicopter unit
+--- @return table zone information
 function ctld.inPickupZone(_heli)
     if ctld.inAir(_heli) then
         return { inZone = false, limit = -1, index = -1 }
@@ -3913,6 +4220,9 @@ function ctld.inPickupZone(_heli)
     return { inZone = false, limit = -1, index = -1 };
 end
 
+--- Get list of spawned fobs for coalition
+--- @param _heli unit helicopter unit
+--- @return table list of fob static objects
 function ctld.getSpawnedFobs(_heli)
     local _fobs = {}
 
@@ -3927,7 +4237,9 @@ function ctld.getSpawnedFobs(_heli)
     return _fobs
 end
 
--- are we in a dropoff zone
+--- Is helicopter in a dropoff zone
+--- @param _heli unit helicopter unit
+--- @return boolean in zone
 function ctld.inDropoffZone(_heli)
     if ctld.inAir(_heli) then
         return false
@@ -3952,7 +4264,10 @@ function ctld.inDropoffZone(_heli)
     return false
 end
 
--- are we in a waypoint zone
+--- Is helicopter in a waypoint zone
+--- @param _point table point to check
+--- @param _coalition number coalition to check for
+--- @return table zone information
 function ctld.inWaypointZone(_point, _coalition)
     for _, _zoneDetails in pairs(ctld.wpZones) do
         local _triggerZone = trigger.misc.getZone(_zoneDetails[1])
@@ -3972,7 +4287,9 @@ function ctld.inWaypointZone(_point, _coalition)
     return { inZone = false }
 end
 
--- are we near friendly logistics zone
+--- Is helicopter near friendly logistics zone
+--- @param _heli unit helicopter unit
+--- @return boolean in zone
 function ctld.inLogisticsZone(_heli)
     ctld.logDebug("ctld.inLogisticsZone(), _heli = %s", ctld.p(_heli))
 
@@ -4001,7 +4318,9 @@ function ctld.inLogisticsZone(_heli)
     return false
 end
 
--- are far enough from a friendly logistics zone
+--- Is helicopter far enough from a friendly logistics zone
+--- @param _heli unit helicopter unit
+--- @return boolean far enough
 function ctld.farEnoughFromLogisticZone(_heli)
     if ctld.inAir(_heli) then
         return false
@@ -4028,6 +4347,7 @@ function ctld.farEnoughFromLogisticZone(_heli)
     return _farEnough
 end
 
+--- Refresh smoke markers in pickup and dropoff zones
 function ctld.refreshSmoke()
     if ctld.disableAllSmoke == true then
         return
@@ -4082,6 +4402,8 @@ function ctld.refreshSmoke()
     timer.scheduleFunction(ctld.refreshSmoke, nil, timer.getTime() + 300)
 end
 
+--- Drop smoke from helicopter
+--- @param _args table arguments (heli name, smoke color)
 function ctld.dropSmoke(_args)
     local _heli = ctld.getTransportUnit(_args[1])
 
@@ -4111,6 +4433,9 @@ function ctld.dropSmoke(_args)
     end
 end
 
+--- Can unit carry vehicles
+--- @param _unit unit unit to check
+--- @return boolean can carry vehicles
 function ctld.unitCanCarryVehicles(_unit)
     local _type = string.lower(_unit:getTypeName())
 
@@ -4124,6 +4449,9 @@ function ctld.unitCanCarryVehicles(_unit)
     return false
 end
 
+--- Is unit capable of dynamic cargo operations
+--- @param _unit unit unit to check
+--- @return boolean capable
 function ctld.unitDynamicCargoCapable(_unit)
     local cache = {}
     local _type = string.lower(_unit:getTypeName())
@@ -4143,6 +4471,9 @@ function ctld.unitDynamicCargoCapable(_unit)
     return result
 end
 
+--- Is unit a JTAC type
+--- @param _type string unit type
+--- @return boolean is JTAC
 function ctld.isJTACUnitType(_type)
     if _type then
         _type = string.lower(_type)
@@ -4156,6 +4487,9 @@ function ctld.isJTACUnitType(_type)
     return false
 end
 
+--- Update zone counter
+--- @param _index number zone index
+--- @param _diff number difference to add
 function ctld.updateZoneCounter(_index, _diff)
     if ctld.pickupZones[_index] ~= nil then
         ctld.pickupZones[_index][3] = ctld.pickupZones[_index][3] + _diff
@@ -4171,6 +4505,8 @@ function ctld.updateZoneCounter(_index, _diff)
     end
 end
 
+--- Process all registered callbacks
+--- @param _callbackArgs table arguments to pass to callbacks
 function ctld.processCallback(_callbackArgs)
     for _, _callback in pairs(ctld.callbacks) do
         local _status, _result = pcall(function()
@@ -4183,12 +4519,9 @@ function ctld.processCallback(_callbackArgs)
     end
 end
 
--- checks the status of all AI troop carriers and auto loads and unloads troops
--- as long as the troops are on the ground
+--- checks the status of all AI troop carriers and auto loads and unloads troops as long as the troops are on the ground
 function ctld.checkAIStatus()
     timer.scheduleFunction(ctld.checkAIStatus, nil, timer.getTime() + 2)
-
-
     for _, _unitName in pairs(ctld.transportPilotNames) do
         local status, error = pcall(function()
             local _unit = ctld.getTransportUnit(_unitName)
@@ -4234,6 +4567,9 @@ function ctld.checkAIStatus()
     end
 end
 
+--- Get transport limit for unit type
+--- @param _unitType string unit type
+--- @return number transport limit
 function ctld.getTransportLimit(_unitType)
     if ctld.unitLoadLimits[_unitType] then
         return ctld.unitLoadLimits[_unitType]
@@ -4242,6 +4578,9 @@ function ctld.getTransportLimit(_unitType)
     return ctld.numberOfTroops
 end
 
+--- Get unit actions for unit type
+--- @param _unitType string unit type
+--- @return table unit actions
 function ctld.getUnitActions(_unitType)
     if ctld.unitActions[_unitType] then
         return ctld.unitActions[_unitType]
@@ -4250,6 +4589,9 @@ function ctld.getUnitActions(_unitType)
     return { crates = true, troops = true }
 end
 
+--- Get group ID for unit
+--- @param _unit unit unit to get group ID for
+--- @return number group ID or nil
 function ctld.getGroupId(_unit)
     local _unitDB = mist.DBs.unitsById[tonumber(_unit:getID())]
     if _unitDB ~= nil and _unitDB.groupId then
@@ -4281,7 +4623,10 @@ function ctld.getGroupId(_unit)
     return nil
 end
 
---get distance in meters assuming a Flat world
+--- Get distance in meters assuming a Flat world
+--- @param _point1 table first point with x and z coordinates
+--- @param _point2 table second point with x and z coordinates
+--- @return number distance in meters
 function ctld.getDistance(_point1, _point2)
     local xUnit = _point1.x
     local yUnit = _point1.z
