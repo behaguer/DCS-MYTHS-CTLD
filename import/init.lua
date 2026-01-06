@@ -469,6 +469,7 @@ function ctld.tools.isValueInIpairTable(tab, value)
 --- @param destLon number Longitude of the arrival point in degrees.
 --- @param resultFormat string The desired output format: "radian", "degree" or "clock".
 --- @return number The relative orientation in the specified resultFormat.
+--- @return string The resultFormat used.
 function ctld.tools.getRelativeBearing(refLat, refLon, refHeading, destLat, destLon, resultFormat)
   -- Converting degrees to radians for geometric calculations
   local radrefLat = math.rad(refLat)
@@ -501,7 +502,7 @@ function ctld.tools.getRelativeBearing(refLat, refLon, refHeading, destLat, dest
     -- Convert to clock position (12h = front, 3h = right, 6h = back, etc..)
     local bearingDeg = math.deg(normalizedRad)
     local clockPosition = ((bearingDeg + 360) % 360) / 30
-    clockPosition =  clockPosition >= 0 and math.floor(clockPosition + 0.5) or math.ceil(clockPosition - 0.5), resultFormat		-- rounded clockPosition
+    clockPosition = clockPosition >= 0 and math.floor(clockPosition + 0.5) or math.ceil(clockPosition - 0.5)		-- rounded clockPosition
     if clockPosition == 0 then clockPosition = 12 end
     return clockPosition, resultFormat
   else -- By default, the resultFormat is "degree"
